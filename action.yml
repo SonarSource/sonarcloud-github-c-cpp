@@ -37,22 +37,26 @@ runs:
           Windows)
             SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-windows"
             BUILD_WRAPPER_SUFFIX="win-x86"
+            echo "sonar-scanner-name=sonar-scanner.bat" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64.exe" >> $GITHUB_OUTPUT
             ;;
           Linux)  
             SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_VERSION}-linux
             BUILD_WRAPPER_SUFFIX="linux-x86"
+            echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
             ;;
           macOS)
             SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-macosx"
             BUILD_WRAPPER_SUFFIX="macosx-x86"
+            echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
             ;;
         esac
         echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_SUFFIX}.zip" >> $GITHUB_OUTPUT
         echo "sonar-scanner-dir=sonar-scanner-${SONAR_SCANNER_SUFFIX}" >> $GITHUB_OUTPUT
-        echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
         echo "build-wrapper-url=${SONAR_HOST_URL}/static/cpp/build-wrapper-${BUILD_WRAPPER_SUFFIX}.zip" >> $GITHUB_OUTPUT
         echo "build-wrapper-dir=build-wrapper-${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_OUTPUT
-        echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
       uses: actions/cache@v3

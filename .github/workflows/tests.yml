@@ -30,7 +30,6 @@ jobs:
           [[ $SONAR_HOST_URL == "https://sonarcloud.io" ]]
 
       - name: sonar-scanner is installed and in PATH
-        shell: bash
         run: |
           sonar-scanner --help | grep "INFO: usage: sonar-scanner "
 
@@ -45,7 +44,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          (build-wrapper-win-x86-64 || true) | grep "build-wrapper, version "
+          (build-wrapper-win-x86-64.exe || true) | grep "build-wrapper, version "
 
       - name: build-wrapper is installed and in PATH on Linux
         if: runner.os == 'Linux'
