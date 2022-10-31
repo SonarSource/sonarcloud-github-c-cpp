@@ -102,8 +102,8 @@ runs:
           Windows)
             SONAR_SCANNER_PATH=$(cygpath --absolute --windows "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
             BUILD_WRAPPER_PATH=$(cygpath --absolute --windows "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
-            SONAR_SCANNER_BIN="$(cygpath --absolute --windows "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin/${SONAR_SCANNER_NAME}")
-            BUILD_WRAPPER_BIN="$(cygpath --absolute --windows "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}/${BUILD_WRAPPER_NAME}")
+            SONAR_SCANNER_BIN=$(cygpath --absolute --windows "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin/${SONAR_SCANNER_NAME}")
+            BUILD_WRAPPER_BIN=$(cygpath --absolute --windows "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}/${BUILD_WRAPPER_NAME}")
             ;;
           Linux)  
             SONAR_SCANNER_PATH=$(readlink -f "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
