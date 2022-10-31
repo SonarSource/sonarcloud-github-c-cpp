@@ -37,28 +37,30 @@ jobs:
         run: |
           ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }} --help | grep "INFO: usage: sonar-scanner "
 
+      # build-wrapper does not have --help or equivalent option.
+      # Pass to few arguments and ignore error code      
       - name: build-wrapper is installed and in PATH on Windows
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          build-wrapper-win-x86-64 --help | grep "build-wrapper, version "
+          (build-wrapper-win-x86-64 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper is installed and in PATH on Linux
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          build-wrapper-linux-x86-64 --help | grep "build-wrapper, version "
+          (build-wrapper-linux-x86-64 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper is installed and in PATH on macOS
         if: runner.os == 'macOs'
         shell: bash
         run: |
-          build-wrapper-macosx-x86-64 --help | grep "build-wrapper, version "
+          (build-wrapper-macosx-x86-64 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper-binary output is correct
         shell: bash
         run: |
-          ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }} --help |  grep "build-wrapper, version "
+          (${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }} || true) |  grep "build-wrapper, version "
 
 
           
