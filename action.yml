@@ -14,40 +14,45 @@ inputs:
     description: 'Version of the SonarScanner to use, defaults to latest.'
     required: false
     default: '4.6.2.2472'
+outputs:
+  sonar-scanner-binary:
+    description: "Absolute path to sonar-scanner binary."
+    value: ${{ steps.configure-enviroment.outputs.sonar-scanner-binary }}
+  build-wrapper-binary:
+    description: "Absolute path to build-wrapper binary."
+    value: ${{ steps.configure-enviroment.outputs.build-wrapper-binary }}
 
 
 runs:
   using: "composite"
   steps:
-    - id: configure-windows
-      if: runner.os == 'Windows'
+    - id: setup
       shell: bash
       env:
-        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-windows
-        BUILD_WRAPPER_SUFFIX: win-x86
+        RUNNER_OS: ${{ runner.os }}
+        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
+        SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}  
       run: |
-        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
-        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
-
-    - id: configure-linux
-      if: runner.os == 'Linux'
-      shell: bash
-      env:
-        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-linux
-        BUILD_WRAPPER_SUFFIX: linux-x86
-      run: |
-        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
-        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
-
-    - id: configure-macosx
-      if: runner.os == 'macOS'
-      shell: bash
-      env:
-        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-macosx
-        BUILD_WRAPPER_SUFFIX: macosx-x86
-      run: |
-        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
-        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
+        case ${RUNNER_OS} in
+          Windows)
+            SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-windows"
+            BUILD_WRAPPER_SUFFIX="win-x86"
+            ;;
+          Linux)  
+            SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_VERSION}-linux
+            BUILD_WRAPPER_SUFFIX="linux-x86"
+            ;;
+          macOS)
+            SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-macosx"
+            BUILD_WRAPPER_SUFFIX="macosx-x86"
+            ;;
+        esac
+        echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_SUFFIX}.zip" >> $GITHUB_OUTPUT
+        echo "sonar-scanner-dir=sonar-scanner-${SONAR_SCANNER_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
+        echo "build-wrapper-url=${SONAR_HOST_URL}/static/cpp/build-wrapper-${BUILD_WRAPPER_SUFFIX}.zip" >> $GITHUB_OUTPUT
+        echo "build-wrapper-dir=build-wrapper-${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
       uses: actions/cache@v3
@@ -59,7 +64,7 @@ runs:
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
-        DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_SUFFIX }}.zip'
+        DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}
         INSTALL_DIR: ${{ inputs.installation-dir }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
       run: |
@@ -71,7 +76,7 @@ runs:
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
-        DOWNLOAD_URL: '${{ inputs.sonar-qube-url }}/static/cpp/build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}.zip'
+        DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
         INSTALL_DIR: ${{ inputs.installation-dir }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
       run: |
@@ -83,18 +88,19 @@ runs:
       shell: bash
       env:
         INSTALL_DIR: ${{ inputs.installation-dir }}
-        SONAR_SCANNER_DIR: sonar-scanner-${{ env.SONAR_SCANNER_SUFFIX }}
-        SONAR_SCANNER_NAME: sonar-scanner
-        BUILD_WRAPPER_DIR: build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}
-        BUILD_WRAPPER_NAME: build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}-64
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
+        SONAR_SCANNER_DIR: ${{ steps.setup.outputs.sonar-scanner-dir }}
+        SONAR_SCANNER_NAME: ${{ steps.setup.outputs.sonar-scanner-name }}
+        BUILD_WRAPPER_DIR: ${{ steps.setup.outputs.build-wrapper-dir }}
+        BUILD_WRAPPER_NAME: ${{ steps.setup.outputs.build-wrapper-name }}
       run: |
         SONAR_SCANNER_PATH=$(readlink -f "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
         BUILD_WRAPPER_PATH=$(readlink -f "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
-        BUILD_WRAPPER_BIN="${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}"
-        SONAR_SCANNER_BIN="${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}"
-        echo "BUILD_WRAPPER_BIN=${BUILD_WRAPPER_BIN}" >> $GITHUB_ENV
-        echo "SONAR_SCANNER_BIN=${SONAR_SCANNER_BIN}" >> $GITHUB_ENV
+        BUILD_WRAPPER_BIN=$(readlink -f "${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}")
+        SONAR_SCANNER_BIN=$(readlink -f "${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}")
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "${SONAR_SCANNER_PATH}" >> $GITHUB_PATH
         echo "${BUILD_WRAPPER_PATH}" >> $GITHUB_PATH
+        echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
+        echo "sonar-scanner-binary=${SONAR_SCANNER_BIN}" >> $GITHUB_OUTPUT
+
