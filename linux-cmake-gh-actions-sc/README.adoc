@@ -1,0 +1,82 @@
+= C++ example project scanned on SonarCloud using GitHub Actions
+// URIs:
+:uri-qg-status: https://sonarcloud.io/dashboard?id=sonarsource-cfamily-examples_linux-cmake-gh-actions-sc
+:img-qg-status: https://sonarcloud.io/api/project_badges/measure?project=sonarsource-cfamily-examples_linux-cmake-gh-actions-sc&metric=alert_status
+:uri-build-status: https://github.com/sonarsource-cfamily-examples/linux-cmake-gh-actions-sc/actions/workflows/build.yml
+:img-build-status: https://github.com/sonarsource-cfamily-examples/linux-cmake-gh-actions-sc/actions/workflows/build.yml/badge.svg
+
+image:{img-build-status}[Build Status, link={uri-build-status}]
+image:{img-qg-status}[Quality Gate Status,link={uri-qg-status}]
+
+*This project is analysed on https://sonarcloud.io/dashboard?id=sonarsource-cfamily-examples_linux-cmake-gh-actions-sc[SonarCloud]!*
+
+:note-caption: :information_source:
+NOTE: This simple example ignores https://sonarcloud.io/documentation/analysis/languages/cfamily/#analysis-cache[analysis cache] and https://sonarcloud.io/documentation/analysis/languages/cfamily/#multithreaded-code-scan[multithreaded execution] both of which can boost analysis significantly.
+
+It is very easy to analyze a C, C++ and Objective-C project with SonarCloud:
+
+. Create a `sonar-project.properties` file to store your configuration
+. In your `.github/workflows/build.yml` file:
+.. Download the https://sonarcloud.io/documentation/analysis/scan/sonarscanner/[Sonar Scanner]
+.. Download the https://sonarcloud.io/documentation/analysis/languages/cfamily/#analysis-steps-using-build-wrapper[Build Wrapper]
+.. Wrap your compilation with the Build Wrapper
+.. Run `sonar-scanner` as the final step
+. Make sure that you have your token stored as a secret in your repository (`SONAR_TOKEN`). You can request new tokens using https://sonarcloud.io/account/security/[Account/Security page].
+
+You can take a look at the link:sonar-project.properties[sonar-project.properties] and link:.github/workflows/build.yml[build.yml] to see it in practice.
+
+= Documentation
+
+- https://sonarcloud.io/documentation/analysis/languages/cfamily/[Documentation of the C, C++ and Objective-C plugin and its Build Wrapper]
+- https://sonarcloud.io/documentation/getting-started/github/[Documentation of using SonarCloud with GitHub]
+- https://sonarcloud.io/documentation/analysis/languages/cfamily/#analysis-cache[Configuring C, C++ and Objective-C analysis cache]
+- https://sonarcloud.io/documentation/analysis/languages/cfamily/#multithreaded-code-scan[Configuring multithreaded execution]
+- https://sonarcloud.io/documentation/analysis/languages/cfamily/#analysis-steps-using-compilation-database[Using compilation database (compile_commands.json)]
+
+= Linux\CMake
+
+A build of the https://github.com/sonarsource-cfamily-examples/code[code repository] on a Linux platform using CMake build system.
+
+To build the code run:
+----
+mkdir build && cd build
+cmake ..
+make
+----
+
+= Code Description
+
+An example of a flawed C++ code. The https://github.com/sonarsource-cfamily-examples/code[code repository] is meant to be compiled with different build systems using different CI pipelines on Linux, MacOS, and Windows.
+
+The https://github.com/sonarsource-cfamily-examples/code[code repository] is forked into other repositories in https://github.com/sonarsource-cfamily-examples[this collection] to add a specific build system, platform, and CI.
+The downstream repositories are analyzed either with https://www.sonarqube.org/[SonarQube] or https://sonarcloud.io/[SonarCloud].
+
+You can find examples for:
+
+* https://github.com/sonarsource-cfamily-examples?q=linux[Linux]
+* https://github.com/sonarsource-cfamily-examples?q=macos[MacOS]
+* https://github.com/sonarsource-cfamily-examples?q=windows[Windows]
+
+Using the following build systems:
+
+* https://github.com/sonarsource-cfamily-examples?q=cmake[CMake]
+* https://github.com/sonarsource-cfamily-examples?q=autotools[GNU Autotools]
+* https://github.com/sonarsource-cfamily-examples?q=xcode[Xcode]
+* https://github.com/sonarsource-cfamily-examples?q=msbuild[MSBuild]
+
+Running on the following CI services:
+
+* https://github.com/sonarsource-cfamily-examples?q=azure[Azure DevOps]
+* https://github.com/sonarsource-cfamily-examples?q=gh-actions[GitHub Actions]
+* https://github.com/sonarsource-cfamily-examples?q=travis[Travis]
+* https://github.com/sonarsource-cfamily-examples?q=jenkins[Jenkins]
+* https://github.com/sonarsource-cfamily-examples?q=gitlab[GitLab CI]
+* https://github.com/sonarsource-cfamily-examples?q=bitbucket[BitBucket Pipelines]
+
+Configured for analysis on:
+
+* https://github.com/sonarsource-cfamily-examples?q=-sq[SonarQube]
+* https://github.com/sonarsource-cfamily-examples?q=-sc[SonarCloud]
+
+
+See link:./examples-structure.adoc[examples-structure.adoc] for a description of the structure of https://github.com/sonarsource-cfamily-examples[this GitHub organization] and the relations between its different repositories.
