@@ -38,19 +38,19 @@ runs:
             SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-windows"
             BUILD_WRAPPER_SUFFIX="win-x86"
             echo "sonar-scanner-name=sonar-scanner.bat" >> $GITHUB_OUTPUT
-            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64.exe" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-win-x86-64.exe" >> $GITHUB_OUTPUT
             ;;
           Linux)  
             SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_VERSION}-linux
             BUILD_WRAPPER_SUFFIX="linux-x86"
             echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
-            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-linux-x86-64" >> $GITHUB_OUTPUT
             ;;
           macOS)
             SONAR_SCANNER_SUFFIX="${SONAR_SCANNER_VERSION}-macosx"
             BUILD_WRAPPER_SUFFIX="macosx-x86"
             echo "sonar-scanner-name=sonar-scanner" >> $GITHUB_OUTPUT
-            echo "build-wrapper-name=build-wrapper-${BUILD_WRAPPER_SUFFIX}-64" >> $GITHUB_OUTPUT
+            echo "build-wrapper-name=build-wrapper-macosx-x86" >> $GITHUB_OUTPUT
             ;;
         esac
         echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_SUFFIX}.zip" >> $GITHUB_OUTPUT
@@ -98,12 +98,33 @@ runs:
         BUILD_WRAPPER_DIR: ${{ steps.setup.outputs.build-wrapper-dir }}
         BUILD_WRAPPER_NAME: ${{ steps.setup.outputs.build-wrapper-name }}
       run: |
-        SONAR_SCANNER_PATH=$(readlink -f "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
-        BUILD_WRAPPER_PATH=$(readlink -f "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
-        BUILD_WRAPPER_BIN=$(readlink -f "${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}")
-        SONAR_SCANNER_BIN=$(readlink -f "${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}")
+        case ${RUNNER_OS} in
+          Windows)
+            SONAR_SCANNER_PATH=$(wslpath -w "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
+            BUILD_WRAPPER_PATH=$(wslpath -w "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
+            SONAR_SCANNER_BIN="$(wslpath -w "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/${SONAR_SCANNER_NAME}")
+            BUILD_WRAPPER_BIN="$(wslpath -w "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}/${BUILD_WRAPPER_NAME}")
+            ;;
+          Linux)  
+            SONAR_SCANNER_PATH=$(readlink -f "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
+            BUILD_WRAPPER_PATH=$(readlink -f "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
+            SONAR_SCANNER_BIN=$(readlink -f "${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}")
+            BUILD_WRAPPER_BIN=$(readlink -f "${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}")
+            ;;
+          macOS)
+            # TODO: Fix macOs to preodcue canonical path
+            SONAR_SCANNER_PATH="$(pwd)/${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin"
+            BUILD_WRAPPER_PATH="$(pwd)/${INSTALL_DIR}/${BUILD_WRAPPER_DIR}"
+            SONAR_SCANNER_BIN="${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}"
+            BUILD_WRAPPER_BIN="${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}"
+            ;;
+        esac
+
         echo "SONAR_SCANNER_PATH: ${SONAR_SCANNER_PATH}"
-        echo "BUILD_WRAPPER_PATH: ${SONAR_SCANNER_PATH}"
+        echo "BUILD_WRAPPER_PATH: ${BUILD_WRAPPER_PATH}"
+        echo "SONAR_SCANNER_BIN: ${SONAR_SCANNER_BIN}"
+        echo "BUILD_WRAPPER_BIN: ${BUILD_WRAPPER_BIN}"
+
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "${SONAR_SCANNER_PATH}" >> $GITHUB_PATH
         echo "${BUILD_WRAPPER_PATH}" >> $GITHUB_PATH

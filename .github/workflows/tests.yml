@@ -11,9 +11,7 @@ jobs:
     name: Test action outputs
     strategy:
       matrix:
-        # macos fails because there is no readlink -f
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -56,7 +54,7 @@ jobs:
         if: runner.os == 'macOs'
         shell: bash
         run: |
-          (build-wrapper-macosx-x86-64 || true) | grep "build-wrapper, version "
+          (build-wrapper-macosx-x86 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper-binary output is correct
         shell: bash
