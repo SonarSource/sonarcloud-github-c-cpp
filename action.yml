@@ -1,28 +1,15 @@
 name: 'CFamily github actuin'
 description: 'Analyze C++ project using SonarQube/SonarCloud'
 inputs:
-  sonar-qube-url:
-    description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
-    required: false
-    default: 'https://sonarcloud.io'
-  compilaition-database:
-    description: 'Path to the compilation database (compile_commands.json) file.'
-    required: false
-  build:
-    description: 'Build command for the project.'
-    required: false
-  pre-build:
-    description: 'Command to run before build.'
-    required: false
-    default: ""
-  post-build:
-    description: 'Command to run after build.'
-    required: false
-    default: ""
   installation-dir:
     desciprtion: 'Directory where the sonnar-scanner and build wrapper will be installed.'
     required: false
     default: '.sonar'
+# This should be changed to constants in action
+  sonar-qube-url:
+    description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
+    required: false
+    default: 'https://sonarcloud.io'
   sonar-scanner-version:
     description: 'Version of the SonarScanner to use, defaults to latest.'
     required: false
@@ -111,23 +98,3 @@ runs:
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "${SONAR_SCANNER_PATH}" >> $GITHUB_PATH
         echo "${BUILD_WRAPPER_PATH}" >> $GITHUB_PATH
-
-    - id: run-build-if-specified
-      if: inputs.build != null
-      shell: bash
-      env:
-        BUILD_WRAPPER_OUTPUT: ${{ runner.temp }}/bw-output
-      run: |
-        ${{ inputs.pre-build }}
-        ${BUILD_WRAPPER_BIN} --out-dir "${BUILD_WRAPPER_OUTPUT}" ${{ inputs.build }}
-        ${SONAR_SCANNER_BIN} --define sonar.cfamily.build-wrapper-output="${BUILD_WRAPPER_OUTPUT}"
-        ${{ inputs.post-build }}
-           
-    - id: analyze-compilation-database-if-specified
-      if: inputs.compilation-database != null
-      shell: bash
-      env:
-        COMPILE_COMMANDS_FILE: ${{ inputs.compilation-database }}      
-      run: |
-        ${SONAR_SCANNER_BIN} --define sonar.cfamily.compile-commands="${COMPILE_COMMANDS_FILE}"
-       
