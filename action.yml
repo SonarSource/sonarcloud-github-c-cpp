@@ -50,7 +50,7 @@ runs:
         echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
 
     - id: cache-sonar-tools
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
         path: ${{ inputs.installation-dir }}
