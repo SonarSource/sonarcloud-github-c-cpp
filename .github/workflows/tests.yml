@@ -80,9 +80,69 @@ jobs:
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
           grep "build-wrapper-dir=install-directory/build-wrapper-macosx-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-macosx-x86/build-wrapper-macosx-x86" output
+  download-script-test:
+    name: download.sh script test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-
-
+      - name: Download test without validation
+        shell: bash
+        env:
+          INSTALL_DIR: 'install-directory'
+          DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
+          SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
+          TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
+        run: |
+          ./download.sh > output
+          test -f "$TMP_ZIP_PATH"
+          if [ -f "$TMP_ZIP_PATH.sha256" ]; then
+            echo "$TMP_ZIP_PATH.sha256 shouldn't exist"
+            exit 1
+          fi
+          grep -v "::error::" output
+      - name: Download test with validation
+        shell: bash
+        env:
+          INSTALL_DIR: 'install-directory-sha-validation'
+          DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
+          SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
+          TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
+        run: |
+          ./download.sh -v > output
+          test -f "$TMP_ZIP_PATH"
+          test -f "$TMP_ZIP_PATH".sha256
+          grep -v "::error::" output
+      - name: Incorrect install dir
+        shell: bash
+        env:
+          INSTALL_DIR: ''
+        run: |
+          (./download.sh || echo "=== Script failed ===") > output
+          grep "::error::Failed to create" output
+          grep "=== Script failed ===" output
+      - name: incorrect url
+        shell: bash
+        env:
+          INSTALL_DIR: 'install-directory'
+          DOWNLOAD_URL: 'incorrect-url'
+        run: |
+          (./download.sh || echo "=== Script failed ===") > output
+          grep "::error::Failed to download 'incorrect-url'" output
+          grep "=== Script failed ===" output
+      - name: Incorrect SHA256 url
+        shell: bash
+        env:
+          INSTALL_DIR: 'install-directory'
+          DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
+          SHA_DOWNLOAD_URL: incorrect-sha256-url
+          TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
+        run: |
+          (./download.sh -v || echo "=== Script failed ===") > output
+          grep "::error::Failed to download 'incorrect-sha256-url'" output
+          grep "=== Script failed ===" output
   output-test:
     name: Action outputs
     strategy:
@@ -140,8 +200,3 @@ jobs:
           BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
         run: |
           ($BINARY || true) | grep "build-wrapper, version "
-
-
-          
-
-
