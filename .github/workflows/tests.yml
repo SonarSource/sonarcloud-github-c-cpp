@@ -187,7 +187,7 @@ jobs:
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
         run: |
-          $BINARY --help | grep "INFO: usage: sonar-scanner "
+          "$BINARY" --help | grep "INFO: usage: sonar-scanner "
 
       # build-wrapper does not have --help or equivalent option.
       # Pass to few arguments and ignore error code      
@@ -214,4 +214,4 @@ jobs:
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
         run: |
-          ($BINARY || true) | grep "build-wrapper, version "
+          ("$BINARY" || true) | grep "build-wrapper, version "
