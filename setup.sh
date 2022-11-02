@@ -1,6 +1,6 @@
 #!/bin/bash
 
-case ${RUNNER_OS} in
+case ${OS} in
   Windows)
     SONAR_SCANNER_SUFFIX="windows"
     BUILD_WRAPPER_SUFFIX="win-x86"

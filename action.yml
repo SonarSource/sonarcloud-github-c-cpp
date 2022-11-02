@@ -29,7 +29,7 @@ runs:
     - id: setup
       shell: bash
       env:
-        RUNNER_OS: ${{ runner.os }}
+        OS: ${{ runner.os }}
         INSTALL_DIR: ${{ inputs.installation-dir }}
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}  

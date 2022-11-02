@@ -18,7 +18,7 @@ jobs:
       - name: Windows
         shell: bash
         env:
-          RUNNER_OS: 'Windows'
+          OS: 'Windows'
           INSTALL_DIR: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
