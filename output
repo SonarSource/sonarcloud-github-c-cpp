@@ -1,6 +1,0 @@
-sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip
-sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin
-sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin/sonar-scanner.bat
-build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-win-x86.zip
-build-wrapper-dir=install-directory/build-wrapper-win-x86
-build-wrapper-bin=install-directory/build-wrapper-win-x86/build-wrapper-win-x86-64.exe
