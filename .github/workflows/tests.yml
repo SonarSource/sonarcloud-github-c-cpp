@@ -6,8 +6,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-defaults:
-  continue-on-error: true
 
 jobs:
   setup-script-test:
@@ -20,6 +18,7 @@ jobs:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Windows
+        continue-on-error: true
         shell: bash
         env:
           OS: 'Windows'
@@ -42,6 +41,7 @@ jobs:
           grep "build-wrapper-bin=install-directory/build-wrapper-win-x86/build-wrapper-win-x86-64.exe" output
 
       - name: Linux
+        continue-on-error: true
         shell: bash
         env:
           OS: 'Linux'
@@ -64,6 +64,7 @@ jobs:
           grep "build-wrapper-bin=install-directory/build-wrapper-linux-x86/build-wrapper-linux-x86-64" output
 
       - name: macOSX
+        continue-on-error: true
         shell: bash
         env:
           OS: 'macOS'
@@ -89,6 +90,7 @@ jobs:
 
   output-test:
     name: Action outputs
+    continue-on-error: true
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -108,15 +110,18 @@ jobs:
           cache-binaries: ${{ matrix.cache }}
 
       - name: SONAR_HOST_URL is set
+        continue-on-error: true
         shell: bash
         run: |
           [[ $SONAR_HOST_URL == "https://sonarcloud.io" ]]
 
       - name: sonar-scanner is installed and in PATH
+        continue-on-error: true
         run: |
           sonar-scanner --help | grep "INFO: usage: sonar-scanner "
 
       - name: sonar-scanner-binary output is correct
+        continue-on-error: true
         shell: bash
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
@@ -126,24 +131,28 @@ jobs:
       # build-wrapper does not have --help or equivalent option.
       # Pass to few arguments and ignore error code      
       - name: build-wrapper is installed and in PATH on Windows
+        continue-on-error: true
         if: runner.os == 'Windows'
         shell: bash
         run: |
           (build-wrapper-win-x86-64.exe || true) | grep "build-wrapper, version "
 
       - name: build-wrapper is installed and in PATH on Linux
+        continue-on-error: true
         if: runner.os == 'Linux'
         shell: bash
         run: |
           (build-wrapper-linux-x86-64 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper is installed and in PATH on macOS
+        continue-on-error: true
         if: runner.os == 'macOs'
         shell: bash
         run: |
           (build-wrapper-macosx-x86 || true) | grep "build-wrapper, version "
 
       - name: build-wrapper-binary output is correct
+        continue-on-error: true
         shell: bash
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
