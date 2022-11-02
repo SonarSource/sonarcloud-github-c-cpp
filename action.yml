@@ -42,7 +42,7 @@ runs:
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
-      if: inputs.cache-binaries
+      if: inputs.cache-binaries == true
       uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
