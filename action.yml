@@ -44,7 +44,7 @@ runs:
       if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
-        key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
+        key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
         path: ${{ inputs.installation-dir }}
 
     - id: install-sonar-scanner
