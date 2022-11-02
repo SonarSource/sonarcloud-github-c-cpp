@@ -1,0 +1,100 @@
+name: 'CFamily github actuin'
+description: 'Analyze C++ project using SonarQube/SonarCloud'
+inputs:
+  installation-dir:
+    desciprtion: 'Directory where the sonnar-scanner and build wrapper will be installed.'
+    required: false
+    default: '.sonar'
+# This should be changed to constants in action
+  sonar-qube-url:
+    description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
+    required: false
+    default: 'https://sonarcloud.io'
+  sonar-scanner-version:
+    description: 'Version of the SonarScanner to use, defaults to latest.'
+    required: false
+    default: '4.6.2.2472'
+
+
+runs:
+  using: "composite"
+  steps:
+    - id: configure-windows
+      if: runner.os == 'Windows'
+      shell: bash
+      env:
+        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-windows
+        BUILD_WRAPPER_SUFFIX: win-x86
+      run: |
+        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
+        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
+
+    - id: configure-linux
+      if: runner.os == 'Linux'
+      shell: bash
+      env:
+        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-linux
+        BUILD_WRAPPER_SUFFIX: linux-x86
+      run: |
+        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
+        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
+
+    - id: configure-macosx
+      if: runner.os == 'macOS'
+      shell: bash
+      env:
+        SONAR_SCANNER_SUFFIX: ${{ inputs.sonar-scanner-version }}-macosx
+        BUILD_WRAPPER_SUFFIX: macosx-x86
+      run: |
+        echo "SONAR_SCANNER_SUFFIX=${SONAR_SCANNER_SUFFIX}" >> $GITHUB_ENV
+        echo "BUILD_WRAPPER_SUFFIX=${BUILD_WRAPPER_SUFFIX}" >> $GITHUB_ENV
+
+    - id: cache-sonar-tools
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
+        path: ${{ inputs.installation-dir }}
+
+    - id: install-sonar-scanner
+      if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_SUFFIX }}.zip'
+        INSTALL_DIR: ${{ inputs.installation-dir }}
+        TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
+      run: |
+        mkdir -p "${INSTALL_DIR}"
+        curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
+        unzip -o  -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
+
+    - id: install-build-wrapper
+      if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        DOWNLOAD_URL: '${{ inputs.sonar-qube-url }}/static/cpp/build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}.zip'
+        INSTALL_DIR: ${{ inputs.installation-dir }}
+        TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
+      run: |
+        mkdir -p "${INSTALL_DIR}"
+        curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
+        unzip -o  -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
+
+    - id: configure-enviroment
+      shell: bash
+      env:
+        INSTALL_DIR: ${{ inputs.installation-dir }}
+        SONAR_SCANNER_DIR: sonar-scanner-${{ env.SONAR_SCANNER_SUFFIX }}
+        SONAR_SCANNER_NAME: sonar-scanner
+        BUILD_WRAPPER_DIR: build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}
+        BUILD_WRAPPER_NAME: build-wrapper-${{ env.BUILD_WRAPPER_SUFFIX }}-64
+        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
+      run: |
+        SONAR_SCANNER_PATH=$(readlink -f "${INSTALL_DIR}/${SONAR_SCANNER_DIR}/bin")
+        BUILD_WRAPPER_PATH=$(readlink -f "${INSTALL_DIR}/${BUILD_WRAPPER_DIR}")
+        BUILD_WRAPPER_BIN="${BUILD_WRAPPER_PATH}/${BUILD_WRAPPER_NAME}"
+        SONAR_SCANNER_BIN="${SONAR_SCANNER_PATH}/${SONAR_SCANNER_NAME}"
+        echo "BUILD_WRAPPER_BIN=${BUILD_WRAPPER_BIN}" >> $GITHUB_ENV
+        echo "SONAR_SCANNER_BIN=${SONAR_SCANNER_BIN}" >> $GITHUB_ENV
+        echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
+        echo "${SONAR_SCANNER_PATH}" >> $GITHUB_PATH
+        echo "${BUILD_WRAPPER_PATH}" >> $GITHUB_PATH
