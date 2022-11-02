@@ -5,6 +5,12 @@ inputs:
     desciprtion: 'Directory where the sonnar-scanner and build wrapper will be installed.'
     required: false
     default: '.sonar'
+  cache-binaries:
+    description: 'Configures if installed binaries should be chached using Github cache.'
+    type: boolean  
+    required: false
+    default: true  
+        
 # This should be changed to constants in action
   sonar-qube-url:
     description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
@@ -36,6 +42,7 @@ runs:
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
+      if: inputs.cache-binaries
       uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
