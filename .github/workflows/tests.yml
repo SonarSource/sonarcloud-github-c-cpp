@@ -1,0 +1,147 @@
+name: Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  setup-script-test:
+    name: setup.sh script
+    runs-on: ubuntu-latest  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Windows
+        shell: bash
+        env:
+          OS: 'Windows'
+          INSTALL_DIR: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          ./setup.sh > output
+          echo "- Output:"
+          cat output
+
+          echo "- Check sonar-scanner:"
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin/sonar-scanner.bat" output
+
+          echo "- Check build-wrapper:"
+          grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-win-x86.zip" output
+          grep "build-wrapper-dir=install-directory/build-wrapper-win-x86" output
+          grep "build-wrapper-bin=install-directory/build-wrapper-win-x86/build-wrapper-win-x86-64.exe" output
+
+      - name: Linux
+        shell: bash
+        env:
+          OS: 'Linux'
+          INSTALL_DIR: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          ./setup.sh > output
+          echo "- Output:"
+          cat output
+
+          echo "- Check sonar-scanner:"
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin/sonar-scanner" output
+
+          echo "- Check build-wrapper:"
+          grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-linux-x86.zip" output
+          grep "build-wrapper-dir=install-directory/build-wrapper-linux-x86" output
+          grep "build-wrapper-bin=install-directory/build-wrapper-linux-x86/build-wrapper-linux-x86-64" output
+
+      - name: macOSX
+        shell: bash
+        env:
+          OS: 'macOS'
+          INSTALL_DIR: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          ./setup.sh > output
+          echo "- Output:"
+          cat output
+
+          echo "- Check sonar-scanner:"
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin/sonar-scanner" output
+
+          echo "- Check build-wrapper:"
+          grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
+          grep "build-wrapper-dir=install-directory/build-wrapper-macosx-x86" output
+          grep "build-wrapper-bin=install-directory/build-wrapper-macosx-x86/build-wrapper-macosx-x86" output
+
+
+
+  output-test:
+    name: Action outputs
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Install sonar-scanner
+        id: install-sonar-scanner
+        uses: ./
+
+      - name: SONAR_HOST_URL is set
+        shell: bash
+        run: |
+          [[ $SONAR_HOST_URL == "https://sonarcloud.io" ]]
+
+      - name: sonar-scanner is installed and in PATH
+        run: |
+          sonar-scanner --help | grep "INFO: usage: sonar-scanner "
+
+      - name: sonar-scanner-binary output is correct
+        shell: bash
+        env:
+          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
+        run: |
+          $BINARY --help | grep "INFO: usage: sonar-scanner "
+
+      # build-wrapper does not have --help or equivalent option.
+      # Pass to few arguments and ignore error code      
+      - name: build-wrapper is installed and in PATH on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          (build-wrapper-win-x86-64.exe || true) | grep "build-wrapper, version "
+
+      - name: build-wrapper is installed and in PATH on Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          (build-wrapper-linux-x86-64 || true) | grep "build-wrapper, version "
+
+      - name: build-wrapper is installed and in PATH on macOS
+        if: runner.os == 'macOs'
+        shell: bash
+        run: |
+          (build-wrapper-macosx-x86 || true) | grep "build-wrapper, version "
+
+      - name: build-wrapper-binary output is correct
+        shell: bash
+        env:
+          BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
+        run: |
+          ($BINARY || true) | grep "build-wrapper, version "
+
+
+          
+
+
