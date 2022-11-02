@@ -19,7 +19,12 @@ case ${OS} in
     SONAR_SCANNER_NAME="sonar-scanner"
     BUILD_WRAPPER_NAME="build-wrapper-macosx-x86"
     ;;
+  *)
+    echo "::error::Unsupported runner OS '${OS}'"
+    exit 1
+    ;;
 esac
+
 SONAR_SCANNER_DIR="${INSTALL_DIR}/sonar-scanner-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}"
 echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}.zip"
 echo "sonar-scanner-dir=${SONAR_SCANNER_DIR}"

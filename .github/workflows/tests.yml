@@ -8,7 +8,7 @@ on:
 
 jobs:
   setup-script-test:
-    name: setup.sh script
+    name: setup.sh script test
     runs-on: ubuntu-latest  
     steps:
       - uses: actions/checkout@v3
@@ -24,8 +24,7 @@ jobs:
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./setup.sh > output
-          echo "- Output:"
-          cat output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
@@ -46,8 +45,7 @@ jobs:
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./setup.sh > output
-          echo "- Output:"
-          cat output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
@@ -68,8 +66,7 @@ jobs:
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./setup.sh > output
-          echo "- Output:"
-          cat output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
@@ -80,6 +77,21 @@ jobs:
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
           grep "build-wrapper-dir=install-directory/build-wrapper-macosx-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-macosx-x86/build-wrapper-macosx-x86" output
+
+      - name: Unssuported OS
+        shell: bash
+        env:
+          OS: 'unsupportedOS'
+          INSTALL_DIR: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          (./setup.sh  || echo "=== Script failed ===") > output
+
+          echo "- Check errors:"
+          grep "::error::Unsupported runner OS 'unsupportedOS'" output
+          grep "=== Script failed ===" output
+
   download-script-test:
     name: download.sh script test
     runs-on: ubuntu-latest
@@ -123,7 +135,7 @@ jobs:
           (./download.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to create" output
           grep "=== Script failed ===" output
-      - name: incorrect url
+      - name: Incorrect download url
         shell: bash
         env:
           INSTALL_DIR: 'install-directory'
