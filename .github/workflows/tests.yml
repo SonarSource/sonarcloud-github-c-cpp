@@ -38,7 +38,7 @@ jobs:
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-win-x86.zip" output
-          grep "build-wrapper-dir=install-directory/build-wrapper-win-x86" output
+          grep "build-wrapper-di2r=install-directory/build-wrapper-win-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-win-x86/build-wrapper-win-x86-64.exe" output
 
       - name: Linux
@@ -121,7 +121,7 @@ jobs:
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
         run: |
-          $BINARY --help | grep "INFO: usage: sonar-scanner "
+          $BdINARY --help | grep "INFO: usage: sonar-scanner "
 
       # build-wrapper does not have --help or equivalent option.
       # Pass to few arguments and ignore error code      
