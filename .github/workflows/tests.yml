@@ -88,6 +88,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        cache: [true, false]  
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -97,6 +98,8 @@ jobs:
       - name: Install sonar-scanner
         id: install-sonar-scanner
         uses: ./
+        with:
+          cache-binaries: ${{ matrix.cache }}
 
       - name: SONAR_HOST_URL is set
         shell: bash
