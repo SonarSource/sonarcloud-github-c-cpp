@@ -1,8 +1,8 @@
-name: 'CFamily github actuin'
+name: 'CFamily github action'
 description: 'Analyze C++ project using SonarQube/SonarCloud'
 inputs:
   installation-dir:
-    desciprtion: 'Directory where the sonnar-scanner and build wrapper will be installed.'
+    description: 'Directory where the sonnar-scanner and build wrapper will be installed.'
     required: false
     default: '.sonar'
 # This should be changed to constants in action
@@ -17,10 +17,10 @@ inputs:
 outputs:
   sonar-scanner-binary:
     description: "Absolute path to sonar-scanner binary."
-    value: ${{ steps.configure-enviroment.outputs.sonar-scanner-binary }}
+    value: ${{ steps.configure-environment.outputs.sonar-scanner-binary }}
   build-wrapper-binary:
     description: "Absolute path to build-wrapper binary."
-    value: ${{ steps.configure-enviroment.outputs.build-wrapper-binary }}
+    value: ${{ steps.configure-environment.outputs.build-wrapper-binary }}
 
 
 runs:
@@ -41,17 +41,20 @@ runs:
         key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
         path: ${{ inputs.installation-dir }}
 
+    - id: install-coreutils-for-macOS #needed to have sha256sum command on macOS
+      if: matrix.os == 'macOS-latest'
+      shell: bash
+      run: brew install coreutils
+
     - id: install-sonar-scanner
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}
+        SHA_DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}.sha256
         INSTALL_DIR: ${{ inputs.installation-dir }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
-      run: |
-        mkdir -p "${INSTALL_DIR}"
-        curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
-        unzip -o  -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
+      run: $GITHUB_ACTION_PATH/download.sh -v
 
     - id: install-build-wrapper
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
@@ -60,12 +63,9 @@ runs:
         DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
         INSTALL_DIR: ${{ inputs.installation-dir }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
-      run: |
-        mkdir -p "${INSTALL_DIR}"
-        curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
-        unzip -o  -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
+      run: $GITHUB_ACTION_PATH/download.sh
 
-    - id: configure-enviroment
+    - id: configure-environment
       shell: bash
       env:
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
