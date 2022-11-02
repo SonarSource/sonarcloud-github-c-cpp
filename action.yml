@@ -89,6 +89,7 @@ runs:
           esac
         }  
         
+        echo "::notice:: setting 'SONAR_HOST_URL' enviroment variable to '${SONAR_HOST_URL}'"
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
 
         SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}")
@@ -100,10 +101,10 @@ runs:
         echo "sonar-scanner-binary=${SONAR_SCANNER_BIN}" >> $GITHUB_OUTPUT
         
         BUILD_WRAPPER_DIR=$(realpath "${BUILD_WRAPPER_DIR}")
-        echo "BUILD_WRAPPER_DIR: ${BUILD_WRAPPER_DIR}"
+        echo "::notice:: adding '${BUILD_WRAPPER_DIR}' to the path"
         echo "${BUILD_WRAPPER_DIR}" >> $GITHUB_PATH
 
         BUILD_WRAPPER_BIN=$(realpath "${BUILD_WRAPPER_BIN}")
-        echo "BUILD_WRAPPER_BIN: ${BUILD_WRAPPER_BIN}"
+        echo "::notice:: setting 'build-wrapper-binary' output to '${BUILD_WRAPPER_BIN}'"
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
 
