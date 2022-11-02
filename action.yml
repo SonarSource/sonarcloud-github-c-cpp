@@ -28,7 +28,8 @@ runs:
   steps:
     - id: jq-install
       shell: bash
-      run: brew install jq
+      #TODO: add cases for other OSs
+      run: sudo apt install -y jq
 
     - id: sonar-scanner-version
       shell: bash
