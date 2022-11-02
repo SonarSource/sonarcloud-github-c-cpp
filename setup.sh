@@ -20,6 +20,7 @@ case ${OS} in
     BUILD_WRAPPER_NAME="build-wrapper-macosx-x86"
     ;;
 esac
+echo "${SONAR_SCANNER_VERSION}"
 SONAR_SCANNER_DIR="${INSTALL_DIR}/sonar-scanner-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}/bin"
 echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}.zip"
 echo "sonar-scanner-dir=${SONAR_SCANNER_DIR}"

@@ -33,7 +33,7 @@ runs:
 
     - id: sonar-scanner-version
       shell: bash
-      run: getSonarScannerLatestVersion.sh
+      run: ./getSonarScannerLatestVersion.sh
 
     - id: setup
       shell: bash
@@ -41,7 +41,6 @@ runs:
         OS: ${{ runner.os }}
         INSTALL_DIR: ${{ inputs.installation-dir }}
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
-        SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}  
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
@@ -100,7 +99,7 @@ runs:
        
         echo "::group::Action outputs" 
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
-        echo "'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
+        echo "'SONAR_HOST_URL' environment variable set to '${SONAR_HOST_URL}'"
 
         SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}")
         echo "${SONAR_SCANNER_DIR}" >> $GITHUB_PATH
