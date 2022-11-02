@@ -7,9 +7,81 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  create-install-dir-test:
+    name: create_install_dir.sh script test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Nested in current dir
+        shell: bash
+        env:
+          INSTALL_DIR: '.sonar'
+        run: |
+          ./create_install_dir.sh > output
+          grep -v "::error::" output
+          test -d "${INSTALL_DIR}"
+
+      - name: Nested in home
+        shell: bash
+        env:
+          INSTALL_DIR: '~/.sonar'
+        run: |
+          ./create_install_dir.sh > output
+          grep -v "::error::" output
+          test -d "${INSTALL_DIR}"
+
+      - name: Empty install dir specified
+        shell: bash
+        env:
+          INSTALL_DIR: ''
+        run: |
+          (./create_install_dir.sh || echo "=== Script failed ===") > output
+          grep "::error::Empty installation-dir specified" output
+          grep "=== Script failed ===" output
+
+      - name: No permission to create directory
+        shell: bash
+        env:
+          INSTALL_DIR: '/non_creatable'
+        run: |
+          (./create_install_dir.sh || echo "=== Script failed ===") > output
+          grep "::error::Failed to create non-existing installation-dir '/non_creatable'" output
+          grep "=== Script failed ===" output
+
+      - name: Existing but not readable
+        shell: bash
+        env:
+          INSTALL_DIR: 'not_readable'
+        run: |
+          echo "- Create dir and make it not readable"
+          mkdir -p "${INSTALL_DIR}"
+          chmod -r "${INSTALL_DIR}"
+
+          echo "- Test script behavior"
+          (./create_install_dir.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation-dir 'not_readable' is not readable" output
+          grep "=== Script failed ===" output
+
+      - name: Existing but not writeable
+        shell: bash
+        env:
+          INSTALL_DIR: 'not_writeable'
+        run: |
+          echo "- Create dir and make it not writeable"
+          mkdir -p "${INSTALL_DIR}"
+          chmod -w "${INSTALL_DIR}"
+
+          echo "- Test script behavior"
+          (./create_install_dir.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation-dir 'not_writeable' is not writeable" output
+          grep "=== Script failed ===" output
+
   setup-script-test:
     name: setup.sh script test
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -155,12 +227,13 @@ jobs:
           (./download.sh -v || echo "=== Script failed ===") > output
           grep "::error::Failed to download 'incorrect-sha256-url'" output
           grep "=== Script failed ===" output
+
   output-test:
     name: Action outputs
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        cache: [true, false]  
+        cache: [true, false]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -185,12 +258,12 @@ jobs:
       - name: sonar-scanner-binary output is correct
         shell: bash
         env:
-          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
+          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}
         run: |
           "$BINARY" --help | grep "INFO: usage: sonar-scanner "
 
       # build-wrapper does not have --help or equivalent option.
-      # Pass to few arguments and ignore error code      
+      # Pass to few arguments and ignore error code
       - name: build-wrapper is installed and in PATH on Windows
         if: runner.os == 'Windows'
         shell: bash

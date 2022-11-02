@@ -31,11 +31,11 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Verify installation-dir
+    - name: Verify and installation-dir
       shell: bash
       env:
         INSTALL_DIR: ${{ inputs.installation-dir }}
-      run: ${GITHUB_ACTION_PATH}/verify_install_dir.sh
+      run: ${GITHUB_ACTION_PATH}/create_install_dir.sh
 
     - id: setup
       shell: bash

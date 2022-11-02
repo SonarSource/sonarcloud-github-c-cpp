@@ -8,6 +8,8 @@ check_status() {
   fi
 }
 
+echo "Installation dir is '${INSTALL_DIR}'"
+
 test ! -z "${INSTALL_DIR}"
 check_status "Empty installation-dir specified"
 
