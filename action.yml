@@ -88,23 +88,24 @@ runs:
               ;;
           esac
         }  
-        
+       
+        echo "::group::Action outputs" 
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
-        echo "::notice:: 'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
+        echo "'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
 
         SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}")
         echo "${SONAR_SCANNER_DIR}" >> $GITHUB_PATH
-        echo "::notice:: '${SONAR_SCANNER_DIR}' added to the path"
+        echo "'${SONAR_SCANNER_DIR}' added to the path"
 
         SONAR_SCANNER_BIN=$(realpath "${SONAR_SCANNER_BIN}")
         echo "sonar-scanner-binary=${SONAR_SCANNER_BIN}" >> $GITHUB_OUTPUT
-        echo "::notice:: 'sonar-scanner-binary' output set to '${SONAR_SCANNER_BIN}'"
+        echo "'sonar-scanner-binary' output set to '${SONAR_SCANNER_BIN}'"
         
         BUILD_WRAPPER_DIR=$(realpath "${BUILD_WRAPPER_DIR}")
         echo "${BUILD_WRAPPER_DIR}" >> $GITHUB_PATH
-        echo "::notice:: '${BUILD_WRAPPER_DIR}' added to the path"
+        echo "'${BUILD_WRAPPER_DIR}' added to the path"
 
         BUILD_WRAPPER_BIN=$(realpath "${BUILD_WRAPPER_BIN}")
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
-        echo "::notice:: 'build-wrapper-binary' output set to '${BUILD_WRAPPER_BIN}'"
+        echo "'build-wrapper-binary' output set to '${BUILD_WRAPPER_BIN}'"
 
