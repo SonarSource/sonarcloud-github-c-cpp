@@ -7,9 +7,8 @@ inputs:
     default: '.sonar'
   cache-binaries:
     description: 'Controls if installed binaries should be chached using GitHub cache.'
-    type: boolean  
     required: false
-    default: true  
+    default: 'true'  
         
 # This should be changed to constants in action
   sonar-qube-url:
@@ -42,7 +41,7 @@ runs:
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
-      if: inputs.cache-binaries == true
+      if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
