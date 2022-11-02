@@ -6,12 +6,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+defaults:
+  continue-on-error: true
+
 jobs:
   setup-script-test:
     name: setup.sh script
     runs-on: ubuntu-latest  
     steps:
       - uses: actions/checkout@v3
+        continue-on-error: false
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
@@ -92,11 +96,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+        continue-on-error: false
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Install sonar-scanner
         id: install-sonar-scanner
+        continue-on-error: false  
         uses: ./
         with:
           cache-binaries: ${{ matrix.cache }}
