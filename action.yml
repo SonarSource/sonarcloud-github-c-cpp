@@ -6,7 +6,7 @@ inputs:
     required: false
     default: '.sonar'
   cache-binaries:
-    description: 'Configures if installed binaries should be chached using Github cache.'
+    description: 'Controls if installed binaries should be chached using GitHub cache.'
     type: boolean  
     required: false
     default: true  
