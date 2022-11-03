@@ -15,7 +15,19 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Nested in current dir
+      - name: Existing
+        shell: bash
+        env:
+          INSTALL_PATH: '.sonar'
+        run: |
+          echo "- Create dir"
+          mkdir -p "${INSTALL_PATH}"
+
+          echo "- Test script behavior"
+          ./create_install_path.sh > output
+          grep -v "::error::" output
+
+      - name: Non-existing nested in current dir
         shell: bash
         env:
           INSTALL_PATH: '.sonar'
@@ -24,10 +36,10 @@ jobs:
           grep -v "::error::" output
           test -d "${INSTALL_PATH}"
 
-      - name: Nested in home
+      - name: Nonexisting nested in home
         shell: bash
         env:
-          INSTALL_PATH: '~/.sonar'
+          INSTALL_PATH: '~/third_party/.sonar'
         run: |
           ./create_install_path.sh > output
           grep -v "::error::" output
