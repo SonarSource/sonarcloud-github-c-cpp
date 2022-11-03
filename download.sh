@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source utils.sh
+
 VERIFY_CORRECTNESS=false
 
 help() {
@@ -25,14 +27,6 @@ parse_arguments() {
   done
 }
 
-check_status() {
-  exit_status=$?
-  if [ $exit_status -ne 0 ]; then
-    echo "::error::$1"
-    exit $exit_status
-  fi
-}
-
 verify_download_correctness() {
   echo "Checking download correctness with '$SHA_DOWNLOAD_URL'"
   curl -sSLo "${TMP_ZIP_PATH}.sha256" "${SHA_DOWNLOAD_URL}"
@@ -46,16 +40,16 @@ verify_download_correctness() {
 
 download() {
   echo "Downloading '${DOWNLOAD_URL}'"
-  mkdir -p "${INSTALL_DIR}"
-  check_status "Failed to create ${INSTALL_DIR}"
+  mkdir -p "${INSTALL_PATH}"
+  check_status "Failed to create ${INSTALL_PATH}"
   curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
   check_status "Failed to download '${DOWNLOAD_URL}'"
 }
 
 decompress() {
   echo "Decompressing"
-  unzip -o -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
-  check_status "Failed to unzip the archive into '${INSTALL_DIR}'"
+  unzip -o -d "${INSTALL_PATH}" "${TMP_ZIP_PATH}"
+  check_status "Failed to unzip the archive into '${INSTALL_PATH}'"
 }
 
 ####################################################################################

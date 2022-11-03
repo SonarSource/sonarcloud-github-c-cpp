@@ -7,9 +7,107 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  create-install-dir-test:
+    name: create_install_path.sh script test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Existing
+        shell: bash
+        env:
+          INSTALL_PATH: '.sonar'
+        run: |
+          echo "- Create dir"
+          mkdir -p "${INSTALL_PATH}"
+
+          echo "- Test script behavior"
+          ./create_install_path.sh > output
+          grep -v "::error::" output
+
+      - name: Non-existing nested in current dir
+        shell: bash
+        env:
+          INSTALL_PATH: '.sonar'
+        run: |
+          ./create_install_path.sh > output
+          grep -v "::error::" output
+          test -d "${INSTALL_PATH}"
+
+      - name: Nonexisting nested in home
+        shell: bash
+        env:
+          INSTALL_PATH: '~/third_party/.sonar'
+        run: |
+          ./create_install_path.sh > output
+          grep -v "::error::" output
+          test -d "${INSTALL_PATH}"
+
+      - name: Empty install dir specified
+        shell: bash
+        env:
+          INSTALL_PATH: ''
+        run: |
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Empty installation path specified" output
+          grep "=== Script failed ===" output
+
+      - name: No permission to create directory
+        shell: bash
+        env:
+          INSTALL_PATH: '/non_creatable'
+        run: |
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Failed to create non-existing installation path '/non_creatable'" output
+          grep "=== Script failed ===" output
+
+      - name: Existing but not directory
+        shell: bash
+        env:
+          INSTALL_PATH: 'not_directory'
+        run: |
+          echo "- Create normal file"
+          echo "content" > "${INSTALL_PATH}"
+
+          echo "- Test script behavior"
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_directory' is not a directory" output
+          grep "=== Script failed ===" output
+
+
+      - name: Existing but not readable
+        shell: bash
+        env:
+          INSTALL_PATH: 'not_readable'
+        run: |
+          echo "- Create dir and make it not readable"
+          mkdir -p "${INSTALL_PATH}"
+          chmod -r "${INSTALL_PATH}"
+
+          echo "- Test script behavior"
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_readable' is not readable" output
+          grep "=== Script failed ===" output
+
+      - name: Existing but not writeable
+        shell: bash
+        env:
+          INSTALL_PATH: 'not_writeable'
+        run: |
+          echo "- Create dir and make it not writeable"
+          mkdir -p "${INSTALL_PATH}"
+          chmod -w "${INSTALL_PATH}"
+
+          echo "- Test script behavior"
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_writeable' is not writeable" output
+          grep "=== Script failed ===" output
+
   setup-script-test:
-    name: setup.sh script
-    runs-on: ubuntu-latest  
+    name: configure_paths.sh script test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -19,13 +117,12 @@ jobs:
         shell: bash
         env:
           OS: 'Windows'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
-          echo "- Output:"
-          cat output
+          ./configure_paths.sh > output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
@@ -41,13 +138,12 @@ jobs:
         shell: bash
         env:
           OS: 'Linux'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
-          echo "- Output:"
-          cat output
+          ./configure_paths.sh > output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
@@ -63,13 +159,12 @@ jobs:
         shell: bash
         env:
           OS: 'macOS'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
-          echo "- Output:"
-          cat output
+          ./configure_paths.sh > output
+          grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
@@ -80,6 +175,21 @@ jobs:
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
           grep "build-wrapper-dir=install-directory/build-wrapper-macosx-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-macosx-x86/build-wrapper-macosx-x86" output
+
+      - name: Unssuported OS
+        shell: bash
+        env:
+          OS: 'unsupportedOS'
+          INSTALL_PATH: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          (./configure_paths.sh  || echo "=== Script failed ===") > output
+
+          echo "- Check errors:"
+          grep "::error::Unsupported runner OS 'unsupportedOS'" output
+          grep "=== Script failed ===" output
+
   download-script-test:
     name: download.sh script test
     runs-on: ubuntu-latest
@@ -91,7 +201,7 @@ jobs:
       - name: Download test without validation
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
@@ -106,7 +216,7 @@ jobs:
       - name: Download test with validation
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory-sha-validation'
+          INSTALL_PATH: 'install-directory-sha-validation'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
@@ -118,15 +228,15 @@ jobs:
       - name: Incorrect install dir
         shell: bash
         env:
-          INSTALL_DIR: ''
+          INSTALL_PATH: ''
         run: |
           (./download.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to create" output
           grep "=== Script failed ===" output
-      - name: incorrect url
+      - name: Incorrect download url
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'incorrect-url'
         run: |
           (./download.sh || echo "=== Script failed ===") > output
@@ -135,7 +245,7 @@ jobs:
       - name: Incorrect SHA256 url
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: incorrect-sha256-url
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
@@ -143,12 +253,13 @@ jobs:
           (./download.sh -v || echo "=== Script failed ===") > output
           grep "::error::Failed to download 'incorrect-sha256-url'" output
           grep "=== Script failed ===" output
+
   output-test:
     name: Action outputs
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        cache: [true, false]  
+        cache: [true, false]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -173,12 +284,12 @@ jobs:
       - name: sonar-scanner-binary output is correct
         shell: bash
         env:
-          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}  
+          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}
         run: |
-          $BINARY --help | grep "INFO: usage: sonar-scanner "
+          "$BINARY" --help | grep "INFO: usage: sonar-scanner "
 
       # build-wrapper does not have --help or equivalent option.
-      # Pass to few arguments and ignore error code      
+      # Pass to few arguments and ignore error code
       - name: build-wrapper is installed and in PATH on Windows
         if: runner.os == 'Windows'
         shell: bash
@@ -202,4 +313,4 @@ jobs:
         env:
           BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
         run: |
-          ($BINARY || true) | grep "build-wrapper, version "
+          ("$BINARY" || true) | grep "build-wrapper, version "

@@ -1,20 +1,16 @@
 name: 'CFamily github action'
 description: 'Analyze C++ project using SonarQube/SonarCloud'
 inputs:
-  installation-dir:
-    description: 'Directory where the sonnar-scanner and build wrapper will be installed.'
+  installation-path:
+    description: 'Directory where the sonnar-scanner and build wrapper will be installed. Created if does not exists.'
     required: false
     default: '.sonar'
   cache-binaries:
-    description: 'Controls if installed binaries should be cached using GitHub cache.'
+    description: 'Controls if installed binaries are cached using GitHub cache.'
     required: false
-    default: 'true'  
-        
+    default: 'true'
+
 # This should be changed to constants in action
-  sonar-qube-url:
-    description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
-    required: false
-    default: 'https://sonarcloud.io'
   sonar-scanner-version:
     description: 'Version of the SonarScanner to use, defaults to latest.'
     required: false
@@ -22,79 +18,76 @@ inputs:
 outputs:
   sonar-scanner-binary:
     description: "Absolute path to sonar-scanner binary."
-    value: ${{ steps.configure-environment.outputs.sonar-scanner-binary }}
+    value: ${{ steps.setup-outputs.outputs.sonar-scanner-binary }}
   build-wrapper-binary:
     description: "Absolute path to build-wrapper binary."
-    value: ${{ steps.configure-environment.outputs.build-wrapper-binary }}
+    value: ${{ steps.setup-outputs.outputs.build-wrapper-binary }}
 
 
 runs:
   using: "composite"
   steps:
-    - id: setup
+    # install packaged required for greadlink and sha256sum command on macOS
+    - name: Install required packages for macOS
+      if: runner.os == 'macOS'
+      shell: bash
+      run: brew install coreutils
+
+    - name: Verify and create installation path
+      shell: bash
+      env:
+        INSTALL_PATH: ${{ inputs.installation-path }}
+      run: ${GITHUB_ACTION_PATH}/create_install_path.sh
+
+    - name: Configure paths
+      id: configure_paths
       shell: bash
       env:
         OS: ${{ runner.os }}
-        INSTALL_DIR: ${{ inputs.installation-dir }}
-        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
-        SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}  
-      run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
+        INSTALL_PATH: ${{ inputs.installation-path }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
+        SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
+      run: ${GITHUB_ACTION_PATH}/configure_paths.sh >> $GITHUB_OUTPUT
 
-    - id: cache-sonar-tools
+    - name: Cache sonar-scanner installation
+      id: cache-sonar-tools
       if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
         key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
-        path: ${{ steps.setup.outputs.sonar-scanner-dir }}
+        path: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
 
-    - id: install-coreutils-for-macOS #needed to have sha256sum command on macOS
-      if: matrix.os == 'macOS-latest'
-      shell: bash
-      run: brew install coreutils
-
-    - id: install-sonar-scanner
+    - name: Download and install sonar-scanner
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
-        DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}
-        SHA_DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}.sha256
-        INSTALL_DIR: ${{ inputs.installation-dir }}
+        DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}
+        SHA_DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}.sha256
+        INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
-      run: $GITHUB_ACTION_PATH/download.sh -v
+      run: ${GITHUB_ACTION_PATH}/download.sh -v
 
-    - id: install-build-wrapper
+    - name: Download and install build-wrapper
       shell: bash
       env:
-        DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
-        INSTALL_DIR: ${{ inputs.installation-dir }}
+        DOWNLOAD_URL: ${{ steps.configure_paths.outputs.build-wrapper-url }}
+        INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
-      run: $GITHUB_ACTION_PATH/download.sh
+      run: ${GITHUB_ACTION_PATH}/download.sh
 
-    - id: configure-environment
+    - name: Setup action outputs
+      id: setup-outputs
       shell: bash
       env:
-        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
-        SONAR_SCANNER_DIR: ${{ steps.setup.outputs.sonar-scanner-dir }}
-        SONAR_SCANNER_BIN: ${{ steps.setup.outputs.sonar-scanner-bin }}
-        BUILD_WRAPPER_DIR: ${{ steps.setup.outputs.build-wrapper-dir }}
-        BUILD_WRAPPER_BIN: ${{ steps.setup.outputs.build-wrapper-bin }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
+        SONAR_SCANNER_DIR: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
+        SONAR_SCANNER_BIN: ${{ steps.configure_paths.outputs.sonar-scanner-bin }}
+        BUILD_WRAPPER_DIR: ${{ steps.configure_paths.outputs.build-wrapper-dir }}
+        BUILD_WRAPPER_BIN: ${{ steps.configure_paths.outputs.build-wrapper-bin }}
       run: |
-        realpath() {
-          case ${RUNNER_OS} in
-            Windows)
-              cygpath --absolute --windows "$1"
-              ;;
-            Linux)
-              readlink -f "$1"  
-              ;;
-            macOS)
-              # TODO: Fix macOs to preodcue canonical path
-              echo "$(pwd)/$1"
-              ;;
-          esac
-        }  
-       
-        echo "::group::Action outputs" 
+        source ${GITHUB_ACTION_PATH}/utils.sh
+
+        echo "::group::Action outputs"
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
 
@@ -105,7 +98,7 @@ runs:
         SONAR_SCANNER_BIN=$(realpath "${SONAR_SCANNER_BIN}")
         echo "sonar-scanner-binary=${SONAR_SCANNER_BIN}" >> $GITHUB_OUTPUT
         echo "'sonar-scanner-binary' output set to '${SONAR_SCANNER_BIN}'"
-        
+
         BUILD_WRAPPER_BIN_DIR=$(realpath "${BUILD_WRAPPER_DIR}")
         echo "${BUILD_WRAPPER_BIN_DIR}" >> $GITHUB_PATH
         echo "'${BUILD_WRAPPER_BIN_DIR}' added to the path"
@@ -113,4 +106,5 @@ runs:
         BUILD_WRAPPER_BIN=$(realpath "${BUILD_WRAPPER_BIN}")
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
         echo "'build-wrapper-binary' output set to '${BUILD_WRAPPER_BIN}'"
+        echo "::endgroup::"
 
