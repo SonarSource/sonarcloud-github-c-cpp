@@ -51,6 +51,20 @@ jobs:
           grep "::error::Failed to create non-existing installation-dir '/non_creatable'" output
           grep "=== Script failed ===" output
 
+      - name: Existing but not directory
+        shell: bash
+        env:
+          INSTALL_DIR: 'not_directory'
+        run: |
+          echo "- Create normal file"
+          echo "content" > "${INSTALL_DIR}"
+
+          echo "- Test script behavior"
+          (./create_install_dir.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation-dir 'not_directory' is not a directory" output
+          grep "=== Script failed ===" output
+
+
       - name: Existing but not readable
         shell: bash
         env:
