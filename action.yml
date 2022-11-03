@@ -11,10 +11,6 @@ inputs:
     default: 'true'
 
 # This should be changed to constants in action
-  sonar-qube-url:
-    description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
-    required: false
-    default: 'https://sonarcloud.io'
   sonar-scanner-version:
     description: 'Version of the SonarScanner to use, defaults to latest.'
     required: false
@@ -49,7 +45,7 @@ runs:
       env:
         OS: ${{ runner.os }}
         INSTALL_PATH: ${{ inputs.installation-path }}
-        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
       run: ${GITHUB_ACTION_PATH}/configure_paths.sh >> $GITHUB_OUTPUT
 
@@ -83,7 +79,7 @@ runs:
       id: setup-outputs
       shell: bash
       env:
-        SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
         SONAR_SCANNER_DIR: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
         SONAR_SCANNER_BIN: ${{ steps.configure_paths.outputs.sonar-scanner-bin }}
         BUILD_WRAPPER_DIR: ${{ steps.configure_paths.outputs.build-wrapper-dir }}
