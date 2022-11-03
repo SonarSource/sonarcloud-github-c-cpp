@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ ${ARCH} != "X64" ]]; then 
+  echo "::error::Architecture '${ARCH}' is unsupported by build-wrapper"
+  exit 1
+fi
+
 case ${OS} in
   Windows)
     SONAR_SCANNER_SUFFIX="windows"
