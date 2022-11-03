@@ -22,10 +22,10 @@ inputs:
 outputs:
   sonar-scanner-binary:
     description: "Absolute path to sonar-scanner binary."
-    value: ${{ steps.configure-environment.outputs.sonar-scanner-binary }}
+    value: ${{ steps.setup-outputs.outputs.sonar-scanner-binary }}
   build-wrapper-binary:
     description: "Absolute path to build-wrapper binary."
-    value: ${{ steps.configure-environment.outputs.build-wrapper-binary }}
+    value: ${{ steps.setup-outputs.outputs.build-wrapper-binary }}
 
 
 runs:
@@ -52,14 +52,15 @@ runs:
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
-    - id: cache-sonar-tools
+    - name: Cache sonar-scanner installation
+      id: cache-sonar-tools
       if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
         key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
         path: ${{ steps.setup.outputs.sonar-scanner-dir }}
 
-    - id: install-sonar-scanner
+    - name: Download and install sonar-scanner
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
@@ -69,7 +70,7 @@ runs:
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
       run: ${GITHUB_ACTION_PATH}/download.sh -v
 
-    - id: install-build-wrapper
+    - name: Download and install build-wrapper
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
@@ -77,7 +78,8 @@ runs:
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
       run: ${GITHUB_ACTION_PATH}/download.sh
 
-    - id: configure-environment
+    - name: Setup action outputs
+      id: setup-outputs
       shell: bash
       env:
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
@@ -107,4 +109,5 @@ runs:
         BUILD_WRAPPER_BIN=$(realpath "${BUILD_WRAPPER_BIN}")
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
         echo "'build-wrapper-binary' output set to '${BUILD_WRAPPER_BIN}'"
+        echo "::endgroup::"
 
