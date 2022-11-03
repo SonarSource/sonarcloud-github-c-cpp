@@ -94,7 +94,7 @@ jobs:
           grep "=== Script failed ===" output
 
   setup-script-test:
-    name: setup.sh script test
+    name: configure_paths.sh script test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -109,7 +109,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
+          ./configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -130,7 +130,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
+          ./configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -151,7 +151,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./setup.sh > output
+          ./configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -172,7 +172,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          (./setup.sh  || echo "=== Script failed ===") > output
+          (./configure_paths.sh  || echo "=== Script failed ===") > output
 
           echo "- Check errors:"
           grep "::error::Unsupported runner OS 'unsupportedOS'" output

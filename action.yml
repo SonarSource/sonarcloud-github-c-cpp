@@ -43,14 +43,15 @@ runs:
         INSTALL_PATH: ${{ inputs.installation-path }}
       run: ${GITHUB_ACTION_PATH}/create_install_path.sh
 
-    - id: setup
+    - name: Configure paths
+      id: configure_paths
       shell: bash
       env:
         OS: ${{ runner.os }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
-      run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
+      run: ${GITHUB_ACTION_PATH}/configure_paths.sh >> $GITHUB_OUTPUT
 
     - name: Cache sonar-scanner installation
       id: cache-sonar-tools
@@ -58,14 +59,14 @@ runs:
       uses: actions/cache@v3
       with:
         key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
-        path: ${{ steps.setup.outputs.sonar-scanner-dir }}
+        path: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
 
     - name: Download and install sonar-scanner
       if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
-        DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}
-        SHA_DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}.sha256
+        DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}
+        SHA_DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}.sha256
         INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
       run: ${GITHUB_ACTION_PATH}/download.sh -v
@@ -73,7 +74,7 @@ runs:
     - name: Download and install build-wrapper
       shell: bash
       env:
-        DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
+        DOWNLOAD_URL: ${{ steps.configure_paths.outputs.build-wrapper-url }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
       run: ${GITHUB_ACTION_PATH}/download.sh
@@ -83,10 +84,10 @@ runs:
       shell: bash
       env:
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
-        SONAR_SCANNER_DIR: ${{ steps.setup.outputs.sonar-scanner-dir }}
-        SONAR_SCANNER_BIN: ${{ steps.setup.outputs.sonar-scanner-bin }}
-        BUILD_WRAPPER_DIR: ${{ steps.setup.outputs.build-wrapper-dir }}
-        BUILD_WRAPPER_BIN: ${{ steps.setup.outputs.build-wrapper-bin }}
+        SONAR_SCANNER_DIR: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
+        SONAR_SCANNER_BIN: ${{ steps.configure_paths.outputs.sonar-scanner-bin }}
+        BUILD_WRAPPER_DIR: ${{ steps.configure_paths.outputs.build-wrapper-dir }}
+        BUILD_WRAPPER_BIN: ${{ steps.configure_paths.outputs.build-wrapper-bin }}
       run: |
         source ${GITHUB_ACTION_PATH}/utils.sh
 
