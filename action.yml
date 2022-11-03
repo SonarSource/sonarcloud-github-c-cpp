@@ -98,7 +98,7 @@ runs:
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
 
-        SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}")
+        SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}/bin")
         echo "${SONAR_SCANNER_DIR}" >> $GITHUB_PATH
         echo "'${SONAR_SCANNER_DIR}' added to the path"
 

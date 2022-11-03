@@ -29,7 +29,7 @@ jobs:
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin/sonar-scanner.bat" output
 
           echo "- Check build-wrapper:"
@@ -51,7 +51,7 @@ jobs:
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
@@ -73,7 +73,7 @@ jobs:
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
