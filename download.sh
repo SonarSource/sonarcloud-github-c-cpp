@@ -40,16 +40,16 @@ verify_download_correctness() {
 
 download() {
   echo "Downloading '${DOWNLOAD_URL}'"
-  mkdir -p "${INSTALL_DIR}"
-  check_status "Failed to create ${INSTALL_DIR}"
+  mkdir -p "${INSTALL_PATH}"
+  check_status "Failed to create ${INSTALL_PATH}"
   curl -sSLo "${TMP_ZIP_PATH}" "${DOWNLOAD_URL}"
   check_status "Failed to download '${DOWNLOAD_URL}'"
 }
 
 decompress() {
   echo "Decompressing"
-  unzip -o -d "${INSTALL_DIR}" "${TMP_ZIP_PATH}"
-  check_status "Failed to unzip the archive into '${INSTALL_DIR}'"
+  unzip -o -d "${INSTALL_PATH}" "${TMP_ZIP_PATH}"
+  check_status "Failed to unzip the archive into '${INSTALL_PATH}'"
 }
 
 ####################################################################################

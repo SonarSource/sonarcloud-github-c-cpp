@@ -8,7 +8,7 @@ on:
 
 jobs:
   create-install-dir-test:
-    name: create_install_dir.sh script test
+    name: create_install_path.sh script test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,79 +18,79 @@ jobs:
       - name: Nested in current dir
         shell: bash
         env:
-          INSTALL_DIR: '.sonar'
+          INSTALL_PATH: '.sonar'
         run: |
-          ./create_install_dir.sh > output
+          ./create_install_path.sh > output
           grep -v "::error::" output
-          test -d "${INSTALL_DIR}"
+          test -d "${INSTALL_PATH}"
 
       - name: Nested in home
         shell: bash
         env:
-          INSTALL_DIR: '~/.sonar'
+          INSTALL_PATH: '~/.sonar'
         run: |
-          ./create_install_dir.sh > output
+          ./create_install_path.sh > output
           grep -v "::error::" output
-          test -d "${INSTALL_DIR}"
+          test -d "${INSTALL_PATH}"
 
       - name: Empty install dir specified
         shell: bash
         env:
-          INSTALL_DIR: ''
+          INSTALL_PATH: ''
         run: |
-          (./create_install_dir.sh || echo "=== Script failed ===") > output
-          grep "::error::Empty installation-dir specified" output
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Empty installation path specified" output
           grep "=== Script failed ===" output
 
       - name: No permission to create directory
         shell: bash
         env:
-          INSTALL_DIR: '/non_creatable'
+          INSTALL_PATH: '/non_creatable'
         run: |
-          (./create_install_dir.sh || echo "=== Script failed ===") > output
-          grep "::error::Failed to create non-existing installation-dir '/non_creatable'" output
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Failed to create non-existing installation path '/non_creatable'" output
           grep "=== Script failed ===" output
 
       - name: Existing but not directory
         shell: bash
         env:
-          INSTALL_DIR: 'not_directory'
+          INSTALL_PATH: 'not_directory'
         run: |
           echo "- Create normal file"
-          echo "content" > "${INSTALL_DIR}"
+          echo "content" > "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_dir.sh || echo "=== Script failed ===") > output
-          grep "::error::Installation-dir 'not_directory' is not a directory" output
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_directory' is not a directory" output
           grep "=== Script failed ===" output
 
 
       - name: Existing but not readable
         shell: bash
         env:
-          INSTALL_DIR: 'not_readable'
+          INSTALL_PATH: 'not_readable'
         run: |
           echo "- Create dir and make it not readable"
-          mkdir -p "${INSTALL_DIR}"
-          chmod -r "${INSTALL_DIR}"
+          mkdir -p "${INSTALL_PATH}"
+          chmod -r "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_dir.sh || echo "=== Script failed ===") > output
-          grep "::error::Installation-dir 'not_readable' is not readable" output
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_readable' is not readable" output
           grep "=== Script failed ===" output
 
       - name: Existing but not writeable
         shell: bash
         env:
-          INSTALL_DIR: 'not_writeable'
+          INSTALL_PATH: 'not_writeable'
         run: |
           echo "- Create dir and make it not writeable"
-          mkdir -p "${INSTALL_DIR}"
-          chmod -w "${INSTALL_DIR}"
+          mkdir -p "${INSTALL_PATH}"
+          chmod -w "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_dir.sh || echo "=== Script failed ===") > output
-          grep "::error::Installation-dir 'not_writeable' is not writeable" output
+          (./create_install_path.sh || echo "=== Script failed ===") > output
+          grep "::error::Installation path 'not_writeable' is not writeable" output
           grep "=== Script failed ===" output
 
   setup-script-test:
@@ -105,7 +105,7 @@ jobs:
         shell: bash
         env:
           OS: 'Windows'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
@@ -126,7 +126,7 @@ jobs:
         shell: bash
         env:
           OS: 'Linux'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
@@ -147,7 +147,7 @@ jobs:
         shell: bash
         env:
           OS: 'macOS'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
@@ -168,7 +168,7 @@ jobs:
         shell: bash
         env:
           OS: 'unsupportedOS'
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
@@ -189,7 +189,7 @@ jobs:
       - name: Download test without validation
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
@@ -204,7 +204,7 @@ jobs:
       - name: Download test with validation
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory-sha-validation'
+          INSTALL_PATH: 'install-directory-sha-validation'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
@@ -216,7 +216,7 @@ jobs:
       - name: Incorrect install dir
         shell: bash
         env:
-          INSTALL_DIR: ''
+          INSTALL_PATH: ''
         run: |
           (./download.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to create" output
@@ -224,7 +224,7 @@ jobs:
       - name: Incorrect download url
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'incorrect-url'
         run: |
           (./download.sh || echo "=== Script failed ===") > output
@@ -233,7 +233,7 @@ jobs:
       - name: Incorrect SHA256 url
         shell: bash
         env:
-          INSTALL_DIR: 'install-directory'
+          INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
           SHA_DOWNLOAD_URL: incorrect-sha256-url
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip

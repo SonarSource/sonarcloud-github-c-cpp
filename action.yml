@@ -1,8 +1,8 @@
 name: 'CFamily github action'
 description: 'Analyze C++ project using SonarQube/SonarCloud'
 inputs:
-  installation-dir:
-    description: 'Directory where the sonnar-scanner and build wrapper will be installed.'
+  installation-path:
+    description: 'Directory where the sonnar-scanner and build wrapper will be installed. Created if does not exists.'
     required: false
     default: '.sonar'
   cache-binaries:
@@ -37,17 +37,17 @@ runs:
       shell: bash
       run: brew install coreutils
 
-    - name: Verify and installation-dir
+    - name: Verify and create installation path
       shell: bash
       env:
-        INSTALL_DIR: ${{ inputs.installation-dir }}
-      run: ${GITHUB_ACTION_PATH}/create_install_dir.sh
+        INSTALL_PATH: ${{ inputs.installation-path }}
+      run: ${GITHUB_ACTION_PATH}/create_install_path.sh
 
     - id: setup
       shell: bash
       env:
         OS: ${{ runner.os }}
-        INSTALL_DIR: ${{ inputs.installation-dir }}
+        INSTALL_PATH: ${{ inputs.installation-path }}
         SONAR_HOST_URL: ${{ inputs.sonar-qube-url }}
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
@@ -65,7 +65,7 @@ runs:
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}
         SHA_DOWNLOAD_URL: ${{ steps.setup.outputs.sonar-scanner-url }}.sha256
-        INSTALL_DIR: ${{ inputs.installation-dir }}
+        INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
       run: ${GITHUB_ACTION_PATH}/download.sh -v
 
@@ -73,7 +73,7 @@ runs:
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
-        INSTALL_DIR: ${{ inputs.installation-dir }}
+        INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
       run: ${GITHUB_ACTION_PATH}/download.sh
 
