@@ -45,7 +45,7 @@ runs:
       uses: actions/cache@v3
       with:
         key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
-        path: ${{ inputs.installation-dir }}
+        path: ${{ steps.setup.outputs.sonar-scanner-dir }}
 
     - id: install-coreutils-for-macOS #needed to have sha256sum command on macOS
       if: matrix.os == 'macOS-latest'
@@ -63,7 +63,6 @@ runs:
       run: $GITHUB_ACTION_PATH/download.sh -v
 
     - id: install-build-wrapper
-      if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
