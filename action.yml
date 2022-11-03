@@ -10,11 +10,6 @@ inputs:
     required: false
     default: 'true'
 
-# This should be changed to constants in action
-  sonar-scanner-version:
-    description: 'Version of the SonarScanner to use, defaults to latest.'
-    required: false
-    default: '4.6.2.2472'
 outputs:
   sonar-scanner-binary:
     description: "Absolute path to sonar-scanner binary."
@@ -39,6 +34,11 @@ runs:
         INSTALL_PATH: ${{ inputs.installation-path }}
       run: ${GITHUB_ACTION_PATH}/scripts/create_install_path.sh
 
+    - name: Set version of sonar-scanner
+      id: sonar-scanner-version
+      shell: bash
+      run: echo "sonar-scanner-version=4.7.0.2747" >> $GITHUB_OUTPUT
+
     - name: Configure paths
       id: configure_paths
       shell: bash
@@ -46,7 +46,7 @@ runs:
         OS: ${{ runner.os }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
-        SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
+        SONAR_SCANNER_VERSION: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-version }}
       run: ${GITHUB_ACTION_PATH}/scripts/configure_paths.sh >> $GITHUB_OUTPUT
 
     - name: Cache sonar-scanner installation
@@ -54,7 +54,7 @@ runs:
       if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
-        key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
+        key: sonar-scanner-${{ runner.os }}-${{ steps.sonar-scanner-version.outputs.sonar-scanner-version }}
         path: ${{ steps.configure_paths.outputs.sonar-scanner-dir }}
 
     - name: Download and install sonar-scanner
@@ -107,4 +107,3 @@ runs:
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
         echo "'build-wrapper-binary' output set to '${BUILD_WRAPPER_BIN}'"
         echo "::endgroup::"
-
