@@ -37,7 +37,7 @@ runs:
       shell: bash
       env:
         INSTALL_PATH: ${{ inputs.installation-path }}
-      run: ${GITHUB_ACTION_PATH}/create_install_path.sh
+      run: ${GITHUB_ACTION_PATH}/scripts/create_install_path.sh
 
     - name: Configure paths
       id: configure_paths
@@ -47,7 +47,7 @@ runs:
         INSTALL_PATH: ${{ inputs.installation-path }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
         SONAR_SCANNER_VERSION: ${{ inputs.sonar-scanner-version }}
-      run: ${GITHUB_ACTION_PATH}/configure_paths.sh >> $GITHUB_OUTPUT
+      run: ${GITHUB_ACTION_PATH}/scripts/configure_paths.sh >> $GITHUB_OUTPUT
 
     - name: Cache sonar-scanner installation
       id: cache-sonar-tools
@@ -65,7 +65,7 @@ runs:
         SHA_DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}.sha256
         INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
-      run: ${GITHUB_ACTION_PATH}/download.sh -v
+      run: ${GITHUB_ACTION_PATH}/scripts/download.sh -v
 
     - name: Download and install build-wrapper
       shell: bash
@@ -73,7 +73,7 @@ runs:
         DOWNLOAD_URL: ${{ steps.configure_paths.outputs.build-wrapper-url }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/build-wrapper.zip
-      run: ${GITHUB_ACTION_PATH}/download.sh
+      run: ${GITHUB_ACTION_PATH}/scripts/download.sh
 
     - name: Setup action outputs
       id: setup-outputs
@@ -85,7 +85,7 @@ runs:
         BUILD_WRAPPER_DIR: ${{ steps.configure_paths.outputs.build-wrapper-dir }}
         BUILD_WRAPPER_BIN: ${{ steps.configure_paths.outputs.build-wrapper-bin }}
       run: |
-        source ${GITHUB_ACTION_PATH}/utils.sh
+        source ${GITHUB_ACTION_PATH}/scripts/utils.sh
 
         echo "::group::Action outputs"
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
