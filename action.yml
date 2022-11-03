@@ -5,6 +5,11 @@ inputs:
     description: 'Directory where the sonnar-scanner and build wrapper will be installed.'
     required: false
     default: '.sonar'
+  cache-binaries:
+    description: 'Controls if installed binaries should be cached using GitHub cache.'
+    required: false
+    default: 'true'  
+        
 # This should be changed to constants in action
   sonar-qube-url:
     description: 'Address of the SonarQube instance if used. If not specified SonarCloud is used.'
@@ -36,10 +41,11 @@ runs:
       run: ${GITHUB_ACTION_PATH}/setup.sh >> $GITHUB_OUTPUT
 
     - id: cache-sonar-tools
+      if: inputs.cache-binaries == 'true'
       uses: actions/cache@v3
       with:
-        key: ${{ runner.os }}-${{ inputs.sonar-scanner-version }}
-        path: ${{ inputs.installation-dir }}
+        key: sonar-scanner-${{ runner.os }}-${{ inputs.sonar-scanner-version }}
+        path: ${{ steps.setup.outputs.sonar-scanner-dir }}
 
     - id: install-coreutils-for-macOS #needed to have sha256sum command on macOS
       if: matrix.os == 'macOS-latest'
@@ -57,7 +63,6 @@ runs:
       run: $GITHUB_ACTION_PATH/download.sh -v
 
     - id: install-build-wrapper
-      if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.setup.outputs.build-wrapper-url }}
@@ -93,17 +98,17 @@ runs:
         echo "SONAR_HOST_URL=${SONAR_HOST_URL}" >> $GITHUB_ENV
         echo "'SONAR_HOST_URL' enviroment variable set to '${SONAR_HOST_URL}'"
 
-        SONAR_SCANNER_DIR=$(realpath "${SONAR_SCANNER_DIR}")
-        echo "${SONAR_SCANNER_DIR}" >> $GITHUB_PATH
-        echo "'${SONAR_SCANNER_DIR}' added to the path"
+        SONAR_SCANNER_BIN_DIR=$(realpath "${SONAR_SCANNER_DIR}/bin")
+        echo "${SONAR_SCANNER_BIN_DIR}" >> $GITHUB_PATH
+        echo "'${SONAR_SCANNER_BIN_DIR}' added to the path"
 
         SONAR_SCANNER_BIN=$(realpath "${SONAR_SCANNER_BIN}")
         echo "sonar-scanner-binary=${SONAR_SCANNER_BIN}" >> $GITHUB_OUTPUT
         echo "'sonar-scanner-binary' output set to '${SONAR_SCANNER_BIN}'"
         
-        BUILD_WRAPPER_DIR=$(realpath "${BUILD_WRAPPER_DIR}")
-        echo "${BUILD_WRAPPER_DIR}" >> $GITHUB_PATH
-        echo "'${BUILD_WRAPPER_DIR}' added to the path"
+        BUILD_WRAPPER_BIN_DIR=$(realpath "${BUILD_WRAPPER_DIR}")
+        echo "${BUILD_WRAPPER_BIN_DIR}" >> $GITHUB_PATH
+        echo "'${BUILD_WRAPPER_BIN_DIR}' added to the path"
 
         BUILD_WRAPPER_BIN=$(realpath "${BUILD_WRAPPER_BIN}")
         echo "build-wrapper-binary=${BUILD_WRAPPER_BIN}" >> $GITHUB_OUTPUT
