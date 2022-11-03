@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source utils.sh
+source $(dirname -- "$0")/utils.sh
 
 echo "Installation path is '${INSTALL_PATH}'"
 
