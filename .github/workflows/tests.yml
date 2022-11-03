@@ -24,7 +24,7 @@ jobs:
           mkdir -p "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          ./create_install_path.sh > output
+          ./scripts/create_install_path.sh > output
           grep -v "::error::" output
 
       - name: Non-existing nested in current dir
@@ -32,7 +32,7 @@ jobs:
         env:
           INSTALL_PATH: '.sonar'
         run: |
-          ./create_install_path.sh > output
+          ./scripts/create_install_path.sh > output
           grep -v "::error::" output
           test -d "${INSTALL_PATH}"
 
@@ -41,7 +41,7 @@ jobs:
         env:
           INSTALL_PATH: '~/third_party/.sonar'
         run: |
-          ./create_install_path.sh > output
+          ./scripts/create_install_path.sh > output
           grep -v "::error::" output
           test -d "${INSTALL_PATH}"
 
@@ -50,7 +50,7 @@ jobs:
         env:
           INSTALL_PATH: ''
         run: |
-          (./create_install_path.sh || echo "=== Script failed ===") > output
+          (./scripts/create_install_path.sh || echo "=== Script failed ===") > output
           grep "::error::Empty installation path specified" output
           grep "=== Script failed ===" output
 
@@ -59,7 +59,7 @@ jobs:
         env:
           INSTALL_PATH: '/non_creatable'
         run: |
-          (./create_install_path.sh || echo "=== Script failed ===") > output
+          (./scripts/create_install_path.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to create non-existing installation path '/non_creatable'" output
           grep "=== Script failed ===" output
 
@@ -72,7 +72,7 @@ jobs:
           echo "content" > "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_path.sh || echo "=== Script failed ===") > output
+          (./scripts/create_install_path.sh || echo "=== Script failed ===") > output
           grep "::error::Installation path 'not_directory' is not a directory" output
           grep "=== Script failed ===" output
 
@@ -87,7 +87,7 @@ jobs:
           chmod -r "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_path.sh || echo "=== Script failed ===") > output
+          (./scripts/create_install_path.sh || echo "=== Script failed ===") > output
           grep "::error::Installation path 'not_readable' is not readable" output
           grep "=== Script failed ===" output
 
@@ -101,7 +101,7 @@ jobs:
           chmod -w "${INSTALL_PATH}"
 
           echo "- Test script behavior"
-          (./create_install_path.sh || echo "=== Script failed ===") > output
+          (./scripts/create_install_path.sh || echo "=== Script failed ===") > output
           grep "::error::Installation path 'not_writeable' is not writeable" output
           grep "=== Script failed ===" output
 
@@ -121,7 +121,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./configure_paths.sh > output
+          ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -142,7 +142,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./configure_paths.sh > output
+          ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -163,7 +163,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          ./configure_paths.sh > output
+          ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
@@ -184,7 +184,7 @@ jobs:
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
-          (./configure_paths.sh  || echo "=== Script failed ===") > output
+          (./scripts/configure_paths.sh  || echo "=== Script failed ===") > output
 
           echo "- Check errors:"
           grep "::error::Unsupported runner OS 'unsupportedOS'" output
@@ -206,7 +206,7 @@ jobs:
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
-          ./download.sh > output
+          ./scripts/download.sh > output
           test -f "$TMP_ZIP_PATH"
           if [ -f "$TMP_ZIP_PATH.sha256" ]; then
             echo "$TMP_ZIP_PATH.sha256 shouldn't exist"
@@ -221,7 +221,7 @@ jobs:
           SHA_DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip.sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
-          ./download.sh -v > output
+          ./scripts/download.sh -v > output
           test -f "$TMP_ZIP_PATH"
           test -f "$TMP_ZIP_PATH".sha256
           grep -v "::error::" output
@@ -230,7 +230,7 @@ jobs:
         env:
           INSTALL_PATH: ''
         run: |
-          (./download.sh || echo "=== Script failed ===") > output
+          (./scripts/download.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to create" output
           grep "=== Script failed ===" output
       - name: Incorrect download url
@@ -239,7 +239,7 @@ jobs:
           INSTALL_PATH: 'install-directory'
           DOWNLOAD_URL: 'incorrect-url'
         run: |
-          (./download.sh || echo "=== Script failed ===") > output
+          (./scripts/download.sh || echo "=== Script failed ===") > output
           grep "::error::Failed to download 'incorrect-url'" output
           grep "=== Script failed ===" output
       - name: Incorrect SHA256 url
@@ -250,7 +250,7 @@ jobs:
           SHA_DOWNLOAD_URL: incorrect-sha256-url
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
-          (./download.sh -v || echo "=== Script failed ===") > output
+          (./scripts/download.sh -v || echo "=== Script failed ===") > output
           grep "::error::Failed to download 'incorrect-sha256-url'" output
           grep "=== Script failed ===" output
 
