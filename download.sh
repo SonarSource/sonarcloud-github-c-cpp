@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source utils.sh
+
 VERIFY_CORRECTNESS=false
 
 help() {
@@ -23,14 +25,6 @@ parse_arguments() {
       ;;
     esac
   done
-}
-
-check_status() {
-  exit_status=$?
-  if [ $exit_status -ne 0 ]; then
-    echo "::error::$1"
-    exit $exit_status
-  fi
 }
 
 verify_download_correctness() {
