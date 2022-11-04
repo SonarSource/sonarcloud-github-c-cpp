@@ -44,6 +44,7 @@ runs:
       shell: bash
       env:
         OS: ${{ runner.os }}
+        ARCH: ${{ runner.arch }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
         SONAR_SCANNER_VERSION: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-version }}

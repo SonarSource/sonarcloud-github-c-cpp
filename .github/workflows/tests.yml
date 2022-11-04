@@ -117,6 +117,7 @@ jobs:
         shell: bash
         env:
           OS: 'Windows'
+          ARCH: 'X64'  
           INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
@@ -138,6 +139,7 @@ jobs:
         shell: bash
         env:
           OS: 'Linux'
+          ARCH: 'X64'  
           INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
@@ -159,6 +161,7 @@ jobs:
         shell: bash
         env:
           OS: 'macOS'
+          ARCH: 'X64'  
           INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
@@ -180,6 +183,7 @@ jobs:
         shell: bash
         env:
           OS: 'unsupportedOS'
+          ARCH: 'X64'  
           INSTALL_PATH: 'install-directory'
           SONAR_HOST_URL: 'http://sonar-host.com'
           SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
@@ -189,6 +193,22 @@ jobs:
           echo "- Check errors:"
           grep "::error::Unsupported runner OS 'unsupportedOS'" output
           grep "=== Script failed ===" output
+
+      - name: Unssuported architecture
+        shell: bash
+        env:
+          OS: 'Linux'
+          ARCH: 'X86'  
+          INSTALL_PATH: 'install-directory'
+          SONAR_HOST_URL: 'http://sonar-host.com'
+          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+        run: |
+          (./scripts/configure_paths.sh  || echo "=== Script failed ===") > output
+
+          echo "- Check errors:"
+          grep "::error::Architecture 'X86' is unsupported by build-wrapper" output
+          grep "=== Script failed ===" output
+
 
   download-script-test:
     name: download.sh script test
