@@ -275,7 +275,7 @@ jobs:
           grep "=== Script failed ===" output
 
   output-test:
-    name: Action outputs
+    name: Test action outputs
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -286,8 +286,8 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Install sonar-scanner
-        id: install-sonar-scanner
+      - name: Run SonarCloud C/C++ action
+        id: run-action
         uses: ./
         with:
           cache-binaries: ${{ matrix.cache }}
@@ -304,7 +304,7 @@ jobs:
       - name: sonar-scanner-binary output is correct
         shell: bash
         env:
-          BINARY: ${{ steps.install-sonar-scanner.outputs.sonar-scanner-binary }}
+          BINARY: ${{ steps.run-action.outputs.sonar-scanner-binary }}
         run: |
           "$BINARY" --help | grep "INFO: usage: sonar-scanner "
 
@@ -331,6 +331,6 @@ jobs:
       - name: build-wrapper-binary output is correct
         shell: bash
         env:
-          BINARY: ${{ steps.install-sonar-scanner.outputs.build-wrapper-binary }}
+          BINARY: ${{ steps.run-action.outputs.build-wrapper-binary }}
         run: |
           ("$BINARY" || true) | grep "build-wrapper, version "

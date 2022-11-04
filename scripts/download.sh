@@ -54,9 +54,11 @@ decompress() {
 
 ####################################################################################
 
+echo "::group::Download ${DOWNLOAD_URL}"
 parse_arguments $@
 download
 if [ "$VERIFY_CORRECTNESS" = true ]; then
   verify_download_correctness
 fi
 decompress
+echo "::endgroup::"
