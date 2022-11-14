@@ -1,0 +1,37 @@
+name: Release
+on:
+  push:
+    branches:
+      - features/tk/automatic
+
+jobs:
+  release_action:
+    name: create_install_path.sh script test
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt install -y jq
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - id: tagged-version
+        shell: bash  
+        run: cat sonar-scanner-version >> $GITHUB_OUTPUT
+
+      - id: latest-version
+        shell: bash
+        run: |
+          ./scripts/fetch-latest-version.sh > sonar-scanner-version
+          cat sonar-scanner-version >> $GITHUB_OUTPUT
+
+      - id: commit-and-tag
+        if: steps.tagged-version.outputs.sonar-scanner-version != steps.latest-version.outputs.sonar-scanner-version
+        env:
+          SONAR_SCANNER_VERSION: ${{ steps.latest-version.outputs.sonar-scanner-version }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add sonar-scanner-version
+          git commit -m "Updated sonar-scanner-version to ${SONAR_SCANNER_VERSION}"
+          git push
