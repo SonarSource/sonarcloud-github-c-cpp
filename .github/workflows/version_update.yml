@@ -31,6 +31,7 @@ jobs:
       - name: "Create Pull Request for version update"
         if: steps.tagged-version.outputs.sonar-scanner-version != steps.latest-version.outputs.sonar-scanner-version
         uses: peter-evans/create-pull-request@v4
+        with:
           add-paths: sonar-scanner-version
           title: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
           commit-message: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
