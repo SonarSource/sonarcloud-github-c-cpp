@@ -49,18 +49,18 @@ jobs:
           echo "branch-created=true" >> $GITHUB_OUTPUT
           echo "temporary-branch=${TEMPORARY_BRANCH}" >> $GITHUB_OUTPUT
 
-      - name: "Wait for CI to succeed"
-        id: wait-for-tests
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: output-test
-          ref: ${{ steps.create-branch.outputs.temporary-branch }}
-          timeoutSeconds: 2400
-          intervalSeconds: 30
+#      - name: "Wait for CI to succeed"
+#        id: wait-for-tests
+#        uses: fountainhead/action-wait-for-check@v1.0.0
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          checkName: output-test
+#          ref: ${{ steps.create-branch.outputs.temporary-branch }}
+#          timeoutSeconds: 2400
+#          intervalSeconds: 30
 
       - name: "Push updated sonar-scanner-version"
-        if: steps.create-branch.outputs.branch-created == 'true' && steps.wait-for-tests.outputs.conclusion == 'success'
+        if: steps.create-branch.outputs.branch-created == 'true' # && steps.wait-for-tests.outputs.conclusion == 'success'
         env:
           TEMPORARY_BRANCH: ${{ steps.create-branch.outputs.temporary-branch }}
         shell: bash
@@ -76,9 +76,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branches: ${{ steps.create-branch.outputs.temporary-branch }}
 
-      - name: "Fail if the change breaks CI"
-        if: always() && steps.create-branch.outputs.branch-created == 'true' && steps.wait-for-tests.outputs.conclusion != 'success'
-        shell: bash
-        run: exit 1
-
+#      - name: "Fail if the change breaks CI"
+#        if: always() && steps.create-branch.outputs.branch-created == 'true' && steps.wait-for-tests.outputs.conclusion != 'success'
+#        shell: bash
+#        run: exit 1
+#
 
