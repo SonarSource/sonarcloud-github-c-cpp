@@ -1,11 +1,11 @@
 name: Release
 on:
-  push:
-    branches:
-      - features/tk/automatic
+  schedule:
+    - cron: '* * * * *'
+
 
 jobs:
-  release_action:
+  update-version:
     name: Prepare pull request for version update
     runs-on: ubuntu-latest
     steps:
