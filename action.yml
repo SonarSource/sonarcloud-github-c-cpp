@@ -36,7 +36,7 @@ runs:
     - name: Set version of sonar-scanner
       id: sonar-scanner-version
       shell: bash
-      run: echo "sonar-scanner-version=4.7.0.2747" >> $GITHUB_OUTPUT
+      run: cat ${GITHUB_ACTION_PATH}/sonar-scanner-version >> $GITHUB_OUTPUT
 
     - name: Configure paths
       id: configure_paths
