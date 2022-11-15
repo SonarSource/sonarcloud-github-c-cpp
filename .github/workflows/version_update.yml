@@ -35,6 +35,7 @@ jobs:
           add-paths: sonar-scanner-version
           title: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
           commit-message: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          descirption: Automatic updated of sonar-scanner verison value.
           branch: update-to-sonar-scanner-${{ steps.latest-version.outputs.sonar-scanner-version }}
           delete-branch: true
 
