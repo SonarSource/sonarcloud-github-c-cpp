@@ -1,4 +1,4 @@
-name: Release
+name: sonar-scanner version check
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   update-version:
-    name: Prepare pull request for version update
+    name: Prepare pull request for sonar-scanner version update
     runs-on: ubuntu-latest
     steps:
       - run: sudo apt install -y jq
@@ -31,9 +31,9 @@ jobs:
       - name: "Create Pull Request for version update"
         if: steps.tagged-version.outputs.sonar-scanner-version != steps.latest-version.outputs.sonar-scanner-version
         uses: peter-evans/create-pull-request@v4
-        add-paths: sonar-scanner-version
-        title: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
-        commit-message: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
-        branch: update-to-sonar-scanner-${{ steps.latest-version.outputs.sonar-scanner-version }}
-        delete-branch: true
+          add-paths: sonar-scanner-version
+          title: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          commit-message: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          branch: update-to-sonar-scanner-${{ steps.latest-version.outputs.sonar-scanner-version }}
+          delete-branch: true
 
