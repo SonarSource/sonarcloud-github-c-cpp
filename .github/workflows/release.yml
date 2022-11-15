@@ -13,25 +13,72 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+          persist-credentials: true
+          fetch-depth: 0
 
-      - id: tagged-version
+      - name: "Fetch currently used sonar-scanner version"
+        id: tagged-version
         shell: bash  
         run: cat sonar-scanner-version >> $GITHUB_OUTPUT
 
-      - id: latest-version
+      - name: "Fetch lastest sonar-scanner version"
+        id: latest-version
         shell: bash
         run: |
           ./scripts/fetch-latest-version.sh > sonar-scanner-version
           cat sonar-scanner-version >> $GITHUB_OUTPUT
 
-      - id: commit-and-tag
-        if: steps.tagged-version.outputs.sonar-scanner-version != steps.latest-version.outputs.sonar-scanner-version
+      - name: "Cancel if version did not change"
+        if: steps.tagged-version.outputs.sonar-scanner-version == steps.latest-version.outputs.sonar-scanner-version
+        uses: andymckay/cancel-action@0.2
+
+      - name: "Push updated file to new branch"
+        id: create-branch
         env:
           SONAR_SCANNER_VERSION: ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          TEMPORARY_BRANCH: temporary/update-to-sonar-scanner-${{ steps.latest-version.outputs.sonar-scanner-version }}
+        shell: bash 
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config --global user.name "SonarTech"
+          git config --global user.email "sonartech@sonarsource.com"
+          git checkout -b $TEMPORARY_BRANCH
           git add sonar-scanner-version
-          git commit -m "Updated sonar-scanner-version to ${SONAR_SCANNER_VERSION}"
+          git commit -m "Update sonar-scanner-version to ${SONAR_SCANNER_VERSION}"
+          git push --force-with-lease origin ${TEMPORARY_BRANCH}
+
+          echo "branch-created=true" >> $GITHUB_OUTPUT
+          echo "temporary-branch=${TEMPORARY_BRANCH}" >> $GITHUB_OUTPUT
+
+      - name: "Wait for CI to succeed"
+        id: wait-for-tests
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: all_required_checks
+          ref: ${{ steps.create-branch.outputs.temporary-branch }}
+          timeoutSeconds: 2400
+          intervalSeconds: 30
+
+      - name: "Push updated sonar-scanner-version"
+        if: steps.create-branch.outputs.branch-created == 'true' && steps.wait-for-tests.outputs.conclusion == 'success'
+        env:
+          TEMPORARY_BRANCH: ${{ steps.create-branch.outputs.temporary-branch }}
+        shell: bash
+        run: |
+          git checkout features/tk/automatic
+          git merge --ff-only ${TEMPORARY_BRANCH}
           git push
+
+      - name: "Delete temporary branch"
+        if: always() && steps.create-branch.outputs.branch-created == 'true'
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: ${{ steps.create-branch.outputs.temporary-branch }}
+
+      - name: "Fail if the change breaks CI"
+        if: always() && steps.create-branch.outputs.branch-created == 'true' && steps.wait-for-tests.outputs.conclusion != 'success'
+        shell: bash
+        run: exit 1
+
+
