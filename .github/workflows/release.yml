@@ -6,7 +6,7 @@ on:
 
 jobs:
   release_action:
-    name: create_install_path.sh script test
+    name: Check and update sonar-scnaner-version
     runs-on: ubuntu-latest
     steps:
       - run: sudo apt install -y jq
