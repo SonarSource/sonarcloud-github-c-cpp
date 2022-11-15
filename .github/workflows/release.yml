@@ -54,7 +54,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: all_required_checks
+          checkName: output-test
           ref: ${{ steps.create-branch.outputs.temporary-branch }}
           timeoutSeconds: 2400
           intervalSeconds: 30
