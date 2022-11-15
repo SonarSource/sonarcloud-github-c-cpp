@@ -1,0 +1,41 @@
+name: sonar-scanner version check
+on:
+  schedule:
+    - cron: '15 10 * * *'
+
+jobs:
+  update-version:
+    name: Prepare pull request for sonar-scanner version update
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt install -y jq
+
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: "Fetch currently used sonar-scanner version"
+        id: tagged-version
+        shell: bash
+        run: cat sonar-scanner-version >> $GITHUB_OUTPUT
+
+      - name: "Fetch lastest sonar-scanner version"
+        id: latest-version
+        shell: bash
+        run: |
+          ./scripts/fetch-latest-version.sh > sonar-scanner-version
+          cat sonar-scanner-version >> $GITHUB_OUTPUT
+
+      - name: "Create Pull Request for version update"
+        if: steps.tagged-version.outputs.sonar-scanner-version != steps.latest-version.outputs.sonar-scanner-version
+        uses: peter-evans/create-pull-request@v4
+        with:
+          add-paths: sonar-scanner-version
+          title: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          commit-message: Update sonar-scanner-version to ${{ steps.latest-version.outputs.sonar-scanner-version }}
+          body: Automatic updated of sonar-scanner version value. Needs to be tagged for release.
+          branch: update-to-sonar-scanner-${{ steps.latest-version.outputs.sonar-scanner-version }}
+          delete-branch: true
+
