@@ -25,7 +25,7 @@ jobs:
         id: latest-version
         shell: bash
         run: |
-          ./scripts/fetch-latest-version.sh > sonar-scanner-version
+          ./scripts/fetch_latest_version.sh > sonar-scanner-version
           cat sonar-scanner-version >> $GITHUB_OUTPUT
 
       - name: "Create Pull Request for version update"

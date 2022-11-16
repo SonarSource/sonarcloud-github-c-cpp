@@ -278,6 +278,35 @@ jobs:
           grep "::error::Checking sha256 failed" output
           grep "=== Script failed ===" output
 
+  fetch-latest-version-test:
+    name: fetch_latest_version.sh script test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Test script
+        shell: bash
+        run: |
+          ./scripts/fetch_latest_version.sh > output
+         
+          echo "- Check sonar-scanner version:"
+          grep  "sonar-scanner-version=" output
+          SONAR_SCANNER_VERSION=$(cat output | cut -d= -f 2)
+          test ! -z "${SONAR_SCANNER_VERSION}"
+
+          echo "- Check windows sonar-scanner URLs:"
+          grep "sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-windows.zip" output
+          grep -e "^sonar-scanner-sha-windows=[0-9A-Fa-f]\+$" output
+
+          echo "- Check linux sonar-scanner URLs:"
+          grep "sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip" output
+          grep -e "^sonar-scanner-sha-linux=[0-9A-Fa-f]\+$" output
+
+          echo "- Check macosx sonar-scanner URLs:"
+          grep "sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx.zip" output
+          grep -e "^sonar-scanner-sha-macosx=[0-9A-Fa-f]\+$" output
+
   output-test:
     name: Test action outputs
     strategy:
