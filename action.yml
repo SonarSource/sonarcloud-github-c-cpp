@@ -1,4 +1,4 @@
-name: 'CFamily github action'
+name: 'SonarCloud Scan C/C++ addition'
 description: 'Analyze C++ project using SonarQube/SonarCloud'
 inputs:
   installation-path:
