@@ -52,7 +52,7 @@ jobs:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
     - name:  Install sonar-scanner and build-wrapper
-      uses: sonarsource/sonarcloud-github-c-cpp-addition@master
+      uses: sonarsource/sonarcloud-github-c-cpp-addition@v1
     - name: Run build-wrapper
       run: |
       #here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
