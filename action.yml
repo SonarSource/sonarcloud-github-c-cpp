@@ -1,5 +1,5 @@
 name: 'SonarCloud Scan C/C++ addition'
-description: 'Analyze C++ project using SonarQube/SonarCloud'
+description: 'Scan your C/C++ code with SonarCloud to detect bugs, vulnerabilities and code smells.'
 inputs:
   installation-path:
     description: 'Directory where the sonnar-scanner and build wrapper will be installed. Created if does not exists.'
