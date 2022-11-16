@@ -108,6 +108,16 @@ jobs:
   setup-script-test:
     name: configure_paths.sh script test
     runs-on: ubuntu-latest
+    env:
+      INSTALL_PATH: 'install-directory'
+      SONAR_HOST_URL: 'http://sonar-host.com'
+      SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
+      SONAR_SCANNER_URL_WINDOWS: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip'
+      SONAR_SCANNER_SHA_WINDOWS: 'DOWNLOAD-SHA-WINDOWS'
+      SONAR_SCANNER_URL_LINUX: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip'
+      SONAR_SCANNER_SHA_LINUX: 'DOWNLOAD-SHA-LINUX'
+      SONAR_SCANNER_URL_MACOSX: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip'
+      SONAR_SCANNER_SHA_MACOSX: 'DOWNLOAD-SHA-MACOSX'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -118,15 +128,13 @@ jobs:
         env:
           OS: 'Windows'
           ARCH: 'X64'  
-          INSTALL_PATH: 'install-directory'
-          SONAR_HOST_URL: 'http://sonar-host.com'
-          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-WINDOWS" output
           grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin/sonar-scanner.bat" output
 
@@ -140,15 +148,13 @@ jobs:
         env:
           OS: 'Linux'
           ARCH: 'X64'  
-          INSTALL_PATH: 'install-directory'
-          SONAR_HOST_URL: 'http://sonar-host.com'
-          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-LINUX" output
           grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin/sonar-scanner" output
 
@@ -162,15 +168,13 @@ jobs:
         env:
           OS: 'macOS'
           ARCH: 'X64'  
-          INSTALL_PATH: 'install-directory'
-          SONAR_HOST_URL: 'http://sonar-host.com'
-          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           ./scripts/configure_paths.sh > output
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
           grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-MACOSX" output
           grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx" output
           grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin/sonar-scanner" output
 
@@ -184,9 +188,6 @@ jobs:
         env:
           OS: 'unsupportedOS'
           ARCH: 'X64'  
-          INSTALL_PATH: 'install-directory'
-          SONAR_HOST_URL: 'http://sonar-host.com'
-          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           (./scripts/configure_paths.sh  || echo "=== Script failed ===") > output
 
@@ -199,9 +200,6 @@ jobs:
         env:
           OS: 'Linux'
           ARCH: 'X86'  
-          INSTALL_PATH: 'install-directory'
-          SONAR_HOST_URL: 'http://sonar-host.com'
-          SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
         run: |
           (./scripts/configure_paths.sh  || echo "=== Script failed ===") > output
 
