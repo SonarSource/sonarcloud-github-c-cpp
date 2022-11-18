@@ -2,12 +2,12 @@
 
 Using this GitHub Action, scan your code with [SonarCloud](https://sonarcloud.io/) to detect bugs, vulnerabilities and code smells in C and C++!
 
-This GitHub action installs the latest versions of `sonar-scanner` and `build-wrapper` required for [C/C++ SonarCloud analysis](https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/) making the workflow simpler.
+This GitHub action installs the latest versions of `sonar-scanner` and `build-wrapper` required for [C and C++ SonarCloud analysis](https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/) making the workflow simpler.
 For use with other programming languages see [SonarCloud GitHub Action](https://github.com/SonarSource/sonarcloud-github-action/)
 
 <img src="./images/SonarCloud-72px.png">
 
-SonarCloud is the leading product for Continuous Code Quality & Code Security online, totally free for open-source projects. It supports all major programming languages, including Java, JavaScript, TypeScript, C#, C/C++ and many more. If your code is closed source, SonarCloud also offers a paid plan to run private analyses.
+SonarCloud is the leading product for Continuous Code Quality & Code Security online, totally free for open-source projects. It supports all major programming languages, including Java, JavaScript, TypeScript, C#, C and C++ and many more. If your code is closed source, SonarCloud also offers a paid plan to run private analyses.
 
 
 ## Requirements
@@ -52,7 +52,7 @@ jobs:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
     - name:  Install sonar-scanner and build-wrapper
-      uses: sonarsource/sonarcloud-github-c-cpp-addition@v1
+      uses: sonarsource/sonarcloud-github-c-cpp@v1
     - name: Run build-wrapper
       run: |
       #here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
@@ -68,7 +68,7 @@ jobs:
 You can change the `build-wrapper` and `sonar-scanner` installation path by using the optional input `installation-path` like this:
 
 ```yaml
-uses: sonarsource/sonarcloud-github-c-cpp-addition@v1
+uses: sonarsource/sonarcloud-github-c-cpp@v1
 with:
   installation-path: my/custom/directory/path
 ```
@@ -76,7 +76,7 @@ Also, the absolute paths to the installed build-wrapper and sonar-scanner binari
 
 Moreover, by default the action will cache sonar-scanner installation. However, you can disable caching by using the optional input: `cache-binaries` like this:
 ```yaml
-uses: sonarsource/sonarcloud-github-c-cpp-addition@v1
+uses: sonarsource/sonarcloud-github-c-cpp@v1
 with:
   cache-binaries: false
 ```
@@ -96,7 +96,7 @@ Following secrets are required for successful invocation of sonar-scanner:
 ## Do not use this GitHub action if you are in the following situations
 
 * You want to analyze code written in a language other than C or C++. Use [SonarCloud GitHub Action](https://github.com/SonarSource/sonarcloud-github-action/) instead
-* You want to run the action a 32-bits system - build wrappers support only 64-bits OS
+* You want to run the action on a 32-bits system - build wrappers support only 64-bits OS
 
 ## Additional information
 

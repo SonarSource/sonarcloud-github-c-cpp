@@ -1,5 +1,5 @@
-name: 'SonarCloud Scan C/C++ addition'
-description: 'Scan your C/C++ code with SonarCloud to detect bugs, vulnerabilities and code smells.'
+name: 'SonarCloud Scan for C and C++'
+description: 'Scan your C and C++ code with SonarCloud to detect bugs, vulnerabilities and code smells.'
 branding:
   icon: check
   color: green
