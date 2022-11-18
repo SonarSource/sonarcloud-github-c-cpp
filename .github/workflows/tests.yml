@@ -221,7 +221,7 @@ jobs:
         env:
           INSTALL_PATH: 'install-directory-no-sha-validation'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
-          DOWNLOAD_SHA: 'incorrect-sha-not-validated'
+          EXPECTED_SHA: 'incorrect-sha-not-validated'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
           ./scripts/download.sh > output
@@ -232,7 +232,7 @@ jobs:
         env:
           INSTALL_PATH: 'install-directory-sha-validation'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
-          DOWNLOAD_SHA: '9411331814c1d002bd65d37758b872918b7602e7cf3ca5b83a3e19a729b2be05'
+          EXPECTED_SHA: '9411331814c1d002bd65d37758b872918b7602e7cf3ca5b83a3e19a729b2be05'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
           ./scripts/download.sh -v > output
@@ -260,7 +260,7 @@ jobs:
         env:
           INSTALL_PATH: 'install-directory-incorrect-sha'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
-          DOWNLOAD_SHA: 'incorrect-sha256'
+          EXPECTED_SHA: 'incorrect-sha256'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
           (./scripts/download.sh -v || echo "=== Script failed ===") > output
@@ -271,7 +271,7 @@ jobs:
         env:
           INSTALL_PATH: 'install-directory-mismtaching-sha'
           DOWNLOAD_URL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
-          DOWNLOAD_SHA: '3e121d85a4adb1f30b917d5f3eb897966b59e02c3d6d313a78dcd964193dc963'
+          EXPECTED_SHA: '3e121d85a4adb1f30b917d5f3eb897966b59e02c3d6d313a78dcd964193dc963'
           TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
         run: |
           (./scripts/download.sh -v || echo "=== Script failed ===") > output

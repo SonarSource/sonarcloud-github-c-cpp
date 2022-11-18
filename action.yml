@@ -71,7 +71,7 @@ runs:
       shell: bash
       env:
         DOWNLOAD_URL: ${{ steps.configure_paths.outputs.sonar-scanner-url }}
-        DOWNLOAD_SHA: ${{ steps.configure_paths.outputs.sonar-scanner-sha }}
+        EXPECTED_SHA: ${{ steps.configure_paths.outputs.sonar-scanner-sha }}
         INSTALL_PATH: ${{ inputs.installation-path }}
         TMP_ZIP_PATH: ${{ runner.temp }}/sonar-scanner.zip
       run: ${GITHUB_ACTION_PATH}/scripts/download.sh -v
