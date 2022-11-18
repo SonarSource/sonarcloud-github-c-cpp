@@ -28,13 +28,7 @@ parse_arguments() {
 }
 
 verify_download_correctness() {
-  echo "Checking download correctness with '$SHA_DOWNLOAD_URL'"
-  curl -sSLo "${TMP_ZIP_PATH}.sha256" "${SHA_DOWNLOAD_URL}"
-  check_status "Failed to download '$SHA_DOWNLOAD_URL'"
-
-  echo "  ${TMP_ZIP_PATH}" >>${TMP_ZIP_PATH}.sha256
-
-  sha256sum -c ${TMP_ZIP_PATH}.sha256
+  echo "${EXPECTED_SHA} ${TMP_ZIP_PATH}" | sha256sum -c
   check_status "Checking sha256 failed"
 }
 

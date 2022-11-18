@@ -11,18 +11,24 @@ case ${OS} in
     BUILD_WRAPPER_SUFFIX="win-x86"
     SONAR_SCANNER_NAME="sonar-scanner.bat"
     BUILD_WRAPPER_NAME="build-wrapper-win-x86-64.exe"
+    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_WINDOWS}"
+    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_WINDOWS}"
     ;;
   Linux)  
     SONAR_SCANNER_SUFFIX="linux"
     BUILD_WRAPPER_SUFFIX="linux-x86"
     SONAR_SCANNER_NAME="sonar-scanner"
     BUILD_WRAPPER_NAME="build-wrapper-linux-x86-64"
+    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_LINUX}"
+    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_LINUX}"
     ;;
   macOS)
     SONAR_SCANNER_SUFFIX="macosx"
     BUILD_WRAPPER_SUFFIX="macosx-x86"
     SONAR_SCANNER_NAME="sonar-scanner"
     BUILD_WRAPPER_NAME="build-wrapper-macosx-x86"
+    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_MACOSX}"
+    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_MACOSX}"
     ;;
   *)
     echo "::error::Unsupported runner OS '${OS}'"
@@ -30,8 +36,11 @@ case ${OS} in
     ;;
 esac
 
+
+echo "sonar-scanner-url=${SONAR_SCANNER_URL}"
+echo "sonar-scanner-sha=${SONAR_SCANNER_SHA}"
+
 SONAR_SCANNER_DIR="${INSTALL_PATH}/sonar-scanner-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}"
-echo "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}.zip"
 echo "sonar-scanner-dir=${SONAR_SCANNER_DIR}"
 echo "sonar-scanner-bin=${SONAR_SCANNER_DIR}/bin/${SONAR_SCANNER_NAME}"
 
