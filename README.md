@@ -47,7 +47,7 @@ jobs:
     env:
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
@@ -81,7 +81,7 @@ with:
   cache-binaries: false
 ```
 
-See also [example configurations](https://github.com/sonarsource-cfamily-examples)
+See also [example configurations](https://github.com/sonarsource-cfamily-examples?q=gh-actions-sc&type=all&language=&sort=)
 
 ### Secrets
 
