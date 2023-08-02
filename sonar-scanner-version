@@ -1,7 +1,10 @@
-sonar-scanner-version=4.8.0.2856
-sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-windows.zip
-sonar-scanner-sha-windows=a63e080802e8be398f72ab1fc0d174584dfb20e09df1571440fdb180ff39d594
-sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-sonar-scanner-sha-linux=45a9a54dfe5f58b554e9b40ad3becbf9871a4eddb1c2892b67cf191cdd891754
-sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-macosx.zip
-sonar-scanner-sha-macosx=9204c1f0a833c6f57678576f5d3d653291bf1d85a538d323ea65657cbb7cc65a
+sonar-scanner-version=null
+sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-null-windows.zip
+sonar-scanner-sha-windows=<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>Distribution/sonar-scanner-cli/sonar-scanner-cli-null-windows.zip.sha256</Key><RequestId>7NBY376F46X9ZDF3</RequestId><HostId>UYkJTJz0c8pD094jNx18v6YvC6doRHtO0vPvCsDLupfqIPf6LJFhiiLlCAQ9fPvb/WUdiNj3Juo=</HostId></Error>
+sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-null-linux.zip
+sonar-scanner-sha-linux=<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>Distribution/sonar-scanner-cli/sonar-scanner-cli-null-linux.zip.sha256</Key><RequestId>EA9K50FRQSZB991Y</RequestId><HostId>fzbey2zwS/dd4Tl4354UNKoNNJQrq+T0haeHBx8XN/tFsdk1PcqqR5XHi+qWF8UQY6GtI3pdzUSH/zhivPipog==</HostId></Error>
+sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-null-macosx.zip
+sonar-scanner-sha-macosx=<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>Distribution/sonar-scanner-cli/sonar-scanner-cli-null-macosx.zip.sha256</Key><RequestId>HKGEGVBCSZ6Y9E1S</RequestId><HostId>2MNJGdARt52FA30icp16VLl6yXSTPAHE9dbCRiGWMYLzfS8Qc7wUeRXl032V5D53VpV3+GeWIZw=</HostId></Error>
