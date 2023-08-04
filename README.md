@@ -52,7 +52,7 @@ jobs:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
     - name:  Install sonar-scanner and build-wrapper
-      uses: sonarsource/sonarcloud-github-c-cpp@v2
+      uses: sonarsource/sonarcloud-github-c-cpp@v1
     - name: Run build-wrapper
       run: |
       #here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
@@ -68,7 +68,7 @@ jobs:
 You can change the `build-wrapper` and `sonar-scanner` installation path by using the optional input `installation-path` like this:
 
 ```yaml
-uses: sonarsource/sonarcloud-github-c-cpp@v2
+uses: sonarsource/sonarcloud-github-c-cpp@v1
 with:
   installation-path: my/custom/directory/path
 ```
@@ -76,7 +76,7 @@ Also, the absolute paths to the installed build-wrapper and sonar-scanner binari
 
 Moreover, by default the action will cache sonar-scanner installation. However, you can disable caching by using the optional input: `cache-binaries` like this:
 ```yaml
-uses: sonarsource/sonarcloud-github-c-cpp@v2
+uses: sonarsource/sonarcloud-github-c-cpp@v1
 with:
   cache-binaries: false
 ```
