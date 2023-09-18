@@ -1,18 +1,18 @@
-# Scan your C and C++ code with SonarCloud
+# Analyze your code for free with SonarCloud
 
-Using this GitHub Action, scan your code with [SonarCloud](https://sonarcloud.io/) to detect bugs, vulnerabilities and code smells in C and C++!
+Using this GitHub Action, scan your code with [SonarCloud](https://www.sonarsource.com/products/sonarcloud/?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x) to detect bugs, vulnerabilities and code smells in C and C++!
 
 This GitHub action installs the latest versions of `sonar-scanner` and `build-wrapper` required for [C and C++ SonarCloud analysis](https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/) making the workflow simpler.
 For use with other programming languages see [SonarCloud GitHub Action](https://github.com/SonarSource/sonarcloud-github-action/)
 
 <img src="./images/SonarCloud-72px.png">
 
-SonarCloud is the leading product for Continuous Code Quality & Code Security online, totally free for open-source projects. It supports all major programming languages, including Java, JavaScript, TypeScript, C#, C and C++ and many more. If your code is closed source, SonarCloud also offers a paid plan to run private analyses.
+SonarCloud is the leading product for Continuous Code Quality & Code Security online, totally free for open-source projects. It supports 26+ programming languages, including Java, JavaScript, TypeScript, C#, C and C++ and many more. If your code is closed source, SonarCloud also offers a free, no-commitment 14-day trial to run private analyses. Start your free trial here: [SonarCloud Sign Up](https://www.sonarsource.com/products/sonarcloud/signup/?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x). With SonarCloud, you also get IDE Support with [SonarLint](https://www.sonarsource.com/products/sonarlint/?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x) integration to find code issues on the fly. SonarCloud rules and analysis settings synchronize to [SonarLint](https://www.sonarsource.com/products/sonarlint/?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x), aligning teams around a single standard of Clean Code.
 
 
 ## Requirements
 
-* Have an account on SonarCloud. [Sign up for free now](https://sonarcloud.io/sessions/init/github) if it's not already the case!
+* Create your account on SonarCloud. Sign up for free now if it's not already the case! [SonarCloud Sign Up](https://www.sonarsource.com/products/sonarcloud/signup/?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x)
 * The repository to analyze is set up on SonarCloud. [Set it up](https://sonarcloud.io/projects/create) in just one click.
 
 ## Usage
@@ -92,6 +92,8 @@ Following secrets are required for successful invocation of sonar-scanner:
 ## Example of pull request analysis
 
 <img src="./images/SonarCloud-analysis-in-Checks.png">
+
+Want to see more examples of SonarCloud in action? You can [explore current Open Source projects in SonarCloud](https://sonarcloud.io/explore/projects?sort=-analysis_date?utm_medium=referral&utm_source=githubscan-ccpp&utm_campaign=sc-product&utm_content=signup-sonarcloud-listing-x-x&utm_term=ww-psp-x) that are using the Clean as You Code methodology.
 
 ## Do not use this GitHub action if you are in the following situations
 
