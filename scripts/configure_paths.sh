@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ ${ARCH} != "X64" && ! ( ${OS} == "macOS" && ${ARCH} == "ARM64" ) ]]; then 
+if [[ ${ARCH} != "X64" && ! ( (${OS} == "macOS" && ${ARCH} == "ARM64") || (${OS} == "Linux" && ${ARCH} == "ARM64") ) ]]; then 
   echo "::error::Architecture '${ARCH}' is unsupported by build-wrapper"
   exit 1
 fi
@@ -16,11 +16,19 @@ case ${OS} in
     ;;
   Linux)  
     SONAR_SCANNER_SUFFIX="linux"
-    BUILD_WRAPPER_SUFFIX="linux-x86"
     SONAR_SCANNER_NAME="sonar-scanner"
-    BUILD_WRAPPER_NAME="build-wrapper-linux-x86-64"
     SONAR_SCANNER_URL="${SONAR_SCANNER_URL_LINUX}"
     SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_LINUX}"
+    case ${ARCH} in
+      X64)
+        BUILD_WRAPPER_SUFFIX="linux-x86"
+        BUILD_WRAPPER_NAME="build-wrapper-linux-x86-64"
+        ;;
+      ARM64)
+        BUILD_WRAPPER_SUFFIX="linux-aarch64"
+        BUILD_WRAPPER_NAME="build-wrapper-linux-aarch64"
+        ;;
+    esac
     ;;
   macOS)
     SONAR_SCANNER_SUFFIX="macosx"
