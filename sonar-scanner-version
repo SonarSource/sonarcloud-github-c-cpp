@@ -1,7 +1,7 @@
-sonar-scanner-version=5.0.1.3006
-sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
-sonar-scanner-sha-windows=bf8b7b30bd5614aaf244fe5aed3e9f7246b080b8ae3534693533fe3aac9c5594
-sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-sonar-scanner-sha-linux=350dbdb517c10fcb3ce70425db95c415b313cad7296c407d416d88f3d50121f8
-sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-macosx.zip
-sonar-scanner-sha-macosx=ba129044005494f039b41afaad2d949881604e69c6ebe814f4e218c7904a9d2d
+sonar-scanner-version=6.0.0.4432
+sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.0.0.4432-windows.zip
+sonar-scanner-sha-windows=4773dbafd2ce335c0ccaefd3606742bf59658987b5e3c6aa99e51d7ef57a8f33
+sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.0.0.4432-linux.zip
+sonar-scanner-sha-linux=f4c08ec679eeae34a7a1a5df87ee546c287f4683d1dd86afa0aae50e808e0002
+sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.0.0.4432-macosx.zip
+sonar-scanner-sha-macosx=1a492fe70cbb5587ee90344c03a3d18f259dfc9d00a9e1bef946277e89148987
