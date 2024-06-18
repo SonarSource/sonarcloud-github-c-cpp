@@ -347,6 +347,8 @@ jobs:
           grep "sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx.zip" output
           grep -e "^sonar-scanner-sha-macosx=[0-9A-Fa-f]\+$" output
 
+          # TODO: check sonar-scanner URL for universal
+
   output-test:
     name: Test action outputs
     strategy:

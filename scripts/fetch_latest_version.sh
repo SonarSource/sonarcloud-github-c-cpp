@@ -6,6 +6,8 @@ SONAR_SCANNER_VERSION=$(curl -sSL -H "Accept: application/vnd.github+json" \
   https://api.github.com/repos/SonarSource/sonar-scanner-cli/releases/latest | jq -r '.tag_name')
 check_status "Failed to fetch latest sonar-scanner version from GitHub API"
 
+SONAR_SCANNER_VERSION=5.0.1.3006
+
 echo "sonar-scanner-version=${SONAR_SCANNER_VERSION}"
 
 for OS in windows linux macosx universal; do
