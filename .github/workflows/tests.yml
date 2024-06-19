@@ -118,6 +118,8 @@ jobs:
       SONAR_SCANNER_SHA_LINUX: 'DOWNLOAD-SHA-LINUX'
       SONAR_SCANNER_URL_MACOSX: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip'
       SONAR_SCANNER_SHA_MACOSX: 'DOWNLOAD-SHA-MACOSX'
+      SONAR_SCANNER_URL_UNIVERSAL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM.zip'
+      SONAR_SCANNER_SHA_UNIVERSAL: 'DOWNLOAD-SHA'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -143,7 +145,7 @@ jobs:
           grep "build-wrapper-dir=install-directory/build-wrapper-win-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-win-x86/build-wrapper-win-x86-64.exe" output
 
-      - name: Linux
+      - name: Linux_X64
         shell: bash
         env:
           OS: 'Linux'
@@ -162,6 +164,26 @@ jobs:
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-linux-x86.zip" output
           grep "build-wrapper-dir=install-directory/build-wrapper-linux-x86" output
           grep "build-wrapper-bin=install-directory/build-wrapper-linux-x86/build-wrapper-linux-x86-64" output
+
+      - name: Linux_ARM64
+        shell: bash
+        env:
+          OS: 'Linux'
+          ARCH: 'ARM64'
+        run: |
+          ./scripts/configure_paths.sh > output
+          grep -v "::error::" output
+
+          echo "- Check sonar-scanner:"
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM/bin/sonar-scanner" output
+
+          echo "- Check build-wrapper:"
+          grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-linux-aarch64.zip" output
+          grep "build-wrapper-dir=install-directory/build-wrapper-linux-aarch64" output
+          grep "build-wrapper-bin=install-directory/build-wrapper-linux-aarch64/build-wrapper-linux-aarch64" output
 
       - name: macOSX_X64
         shell: bash

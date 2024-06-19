@@ -8,8 +8,12 @@ check_status "Failed to fetch latest sonar-scanner version from GitHub API"
 
 echo "sonar-scanner-version=${SONAR_SCANNER_VERSION}"
 
-for OS in windows linux macosx; do
-  SONAR_SCANNER_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-${OS}.zip"
+for OS in windows linux macosx universal; do
+  if [[ ${OS} == "universal" ]]; then
+    SONAR_SCANNER_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip"
+  else
+    SONAR_SCANNER_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-${OS}.zip"
+  fi
   SONAR_SCANNER_SHA=$(curl -sSL "${SONAR_SCANNER_URL}.sha256")
   check_status "Failed to download ${OS} sonar-scanner checksum from '${SONAR_SCANNER_URL}'"
 
