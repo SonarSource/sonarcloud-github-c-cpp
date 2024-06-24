@@ -30,6 +30,14 @@ runs:
       shell: bash
       run: brew install coreutils
 
+    # installing jre is required because the non self-contained sonar-scanner-cli is used on Linux ARM64
+    - name: Install JRE for linux arm64
+      uses: actions/setup-java@v4
+      if: runner.os == 'Linux' && runner.arch == 'ARM64'
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
     - name: Verify and create installation path
       shell: bash
       env:
@@ -56,6 +64,8 @@ runs:
         SONAR_SCANNER_SHA_LINUX: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-sha-linux }}
         SONAR_SCANNER_URL_MACOSX: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-url-macosx }}
         SONAR_SCANNER_SHA_MACOSX: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-sha-macosx }}
+        SONAR_SCANNER_URL_UNIVERSAL: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-url-universal }}
+        SONAR_SCANNER_SHA_UNIVERSAL: ${{ steps.sonar-scanner-version.outputs.sonar-scanner-sha-universal }}
       run: ${GITHUB_ACTION_PATH}/scripts/configure_paths.sh >> $GITHUB_OUTPUT
 
     - name: Cache sonar-scanner installation
