@@ -112,14 +112,16 @@ jobs:
       INSTALL_PATH: 'install-directory'
       SONAR_HOST_URL: 'http://sonar-host.com'
       SONAR_SCANNER_VERSION: 'vX.Y.Z.MMMM'
-      SONAR_SCANNER_URL_WINDOWS: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip'
-      SONAR_SCANNER_SHA_WINDOWS: 'DOWNLOAD-SHA-WINDOWS'
-      SONAR_SCANNER_URL_LINUX: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip'
-      SONAR_SCANNER_SHA_LINUX: 'DOWNLOAD-SHA-LINUX'
-      SONAR_SCANNER_URL_MACOSX: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip'
-      SONAR_SCANNER_SHA_MACOSX: 'DOWNLOAD-SHA-MACOSX'
-      SONAR_SCANNER_URL_UNIVERSAL: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM.zip'
-      SONAR_SCANNER_SHA_UNIVERSAL: 'DOWNLOAD-SHA'
+      SONAR_SCANNER_URL_WINDOWS_X64: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows-x64.zip'
+      SONAR_SCANNER_SHA_WINDOWS_X64: 'DOWNLOAD-SHA-WINDOWS-X64'
+      SONAR_SCANNER_URL_LINUX_X64: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux-x64.zip'
+      SONAR_SCANNER_SHA_LINUX_X64: 'DOWNLOAD-SHA-LINUX-X64'
+      SONAR_SCANNER_URL_LINUX_AARCH64: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux-aarch64.zip'
+      SONAR_SCANNER_SHA_LINUX_AARCH64: 'DOWNLOAD-SHA-LINUX-AARCH64'
+      SONAR_SCANNER_URL_MACOSX_X64: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx-x64.zip'
+      SONAR_SCANNER_SHA_MACOSX_X64: 'DOWNLOAD-SHA-MACOSX-X64'
+      SONAR_SCANNER_URL_MACOSX_AARCH64: 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx-aarch64.zip'
+      SONAR_SCANNER_SHA_MACOSX_AARCH64: 'DOWNLOAD-SHA-MACOSX-AARCH64'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -135,10 +137,10 @@ jobs:
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
-          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows.zip" output
-          grep "sonar-scanner-sha=DOWNLOAD-SHA-WINDOWS" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows" output
-          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows/bin/sonar-scanner.bat" output
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-windows-x64.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-WINDOWS-X64" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows-x64" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-windows-x64/bin/sonar-scanner.bat" output
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-win-x86.zip" output
@@ -155,10 +157,10 @@ jobs:
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
-          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux.zip" output
-          grep "sonar-scanner-sha=DOWNLOAD-SHA-LINUX" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux" output
-          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux/bin/sonar-scanner" output
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux-x64.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-LINUX-X64" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux-x64" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux-x64/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-linux-x86.zip" output
@@ -175,10 +177,10 @@ jobs:
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
-          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM.zip" output
-          grep "sonar-scanner-sha=DOWNLOAD-SHA" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM" output
-          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM/bin/sonar-scanner" output
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-linux-aarch64.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-LINUX-AARCH64" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux-aarch64" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-linux-aarch64/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-linux-aarch64.zip" output
@@ -195,10 +197,10 @@ jobs:
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
-          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
-          grep "sonar-scanner-sha=DOWNLOAD-SHA-MACOSX" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx" output
-          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin/sonar-scanner" output
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx-x64.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-MACOSX-X64" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx-x64" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx-x64/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
@@ -215,10 +217,10 @@ jobs:
           grep -v "::error::" output
 
           echo "- Check sonar-scanner:"
-          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx.zip" output
-          grep "sonar-scanner-sha=DOWNLOAD-SHA-MACOSX" output
-          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx" output
-          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx/bin/sonar-scanner" output
+          grep "sonar-scanner-url=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-vX.Y.Z.MMMM-macosx-aarch64.zip" output
+          grep "sonar-scanner-sha=DOWNLOAD-SHA-MACOSX-AARCH64" output
+          grep "sonar-scanner-dir=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx-aarch64" output
+          grep "sonar-scanner-bin=install-directory/sonar-scanner-vX.Y.Z.MMMM-macosx-aarch64/bin/sonar-scanner" output
 
           echo "- Check build-wrapper:"
           grep "build-wrapper-url=http://sonar-host.com/static/cpp/build-wrapper-macosx-x86.zip" output
@@ -338,25 +340,44 @@ jobs:
           test ! -z "${SONAR_SCANNER_VERSION}"
 
           echo "- Check windows sonar-scanner URLs:"
-          grep "sonar-scanner-url-windows=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-windows.zip" output
-          grep -e "^sonar-scanner-sha-windows=[0-9A-Fa-f]\+$" output
+          grep "sonar-scanner-url-windows-x64=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-windows-x64.zip" output
+          grep -e "^sonar-scanner-sha-windows-x64=[0-9A-Fa-f]\+$" output
 
           echo "- Check linux sonar-scanner URLs:"
-          grep "sonar-scanner-url-linux=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip" output
-          grep -e "^sonar-scanner-sha-linux=[0-9A-Fa-f]\+$" output
+          grep "sonar-scanner-url-linux-x64=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-x64.zip" output
+          grep -e "^sonar-scanner-sha-linux-x64=[0-9A-Fa-f]\+$" output
+          grep "sonar-scanner-url-linux-aarch64=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-aarch64.zip" output
+          grep -e "^sonar-scanner-sha-linux-aarch64=[0-9A-Fa-f]\+$" output
 
           echo "- Check macosx sonar-scanner URLs:"
-          grep "sonar-scanner-url-macosx=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx.zip" output
-          grep -e "^sonar-scanner-sha-macosx=[0-9A-Fa-f]\+$" output
+          grep "sonar-scanner-url-macosx-x64=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx-x64.zip" output
+          grep -e "^sonar-scanner-sha-macosx-x64=[0-9A-Fa-f]\+$" output
+          grep "sonar-scanner-url-macosx-aarch64=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx-aarch64.zip" output
+          grep -e "^sonar-scanner-sha-macosx-aarch64=[0-9A-Fa-f]\+$" output
 
   output-test:
     name: Test action outputs
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-13]
         cache: [true, false]
+        include:
+          - arch: X64
+          - os: macos-latest
+            arch: ARM64
     runs-on: ${{ matrix.os }}
     steps:
+      # Specifying a specific architecture of the runner is not possible for Github hosted runners
+      # We can only check if the runner architecture matches the expected one
+      - name: check_runner_arch
+        shell: bash
+        run: |
+          echo "Runner architecture: ${{ runner.arch }}"
+          if [[ "${{ runner.arch }}" != "${{ matrix.arch }}" ]]; then
+            echo "##[error]Runner architecture does not match the expected one"
+            exit 1
+          fi
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
