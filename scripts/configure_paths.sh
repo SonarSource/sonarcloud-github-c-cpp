@@ -7,39 +7,48 @@ fi
 
 case ${OS} in
   Windows)
-    SONAR_SCANNER_SUFFIX="-windows"
+    SONAR_SCANNER_SUFFIX="windows-x64"
     BUILD_WRAPPER_SUFFIX="win-x86"
     SONAR_SCANNER_NAME="sonar-scanner.bat"
     BUILD_WRAPPER_NAME="build-wrapper-win-x86-64.exe"
-    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_WINDOWS}"
-    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_WINDOWS}"
+    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_WINDOWS_X64}"
+    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_WINDOWS_X64}"
     ;;
   Linux)  
     case ${ARCH} in
       X64)
-        SONAR_SCANNER_SUFFIX="-linux"
+        SONAR_SCANNER_SUFFIX="linux-x64"
         BUILD_WRAPPER_SUFFIX="linux-x86"
         BUILD_WRAPPER_NAME="build-wrapper-linux-x86-64"
-        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_LINUX}"
-        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_LINUX}"
+        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_LINUX_X64}"
+        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_LINUX_X64}"
         ;;
       ARM64)
-        SONAR_SCANNER_SUFFIX=""
+        SONAR_SCANNER_SUFFIX="linux-aarch64"
         BUILD_WRAPPER_SUFFIX="linux-aarch64"
         BUILD_WRAPPER_NAME="build-wrapper-linux-aarch64"
-        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_UNIVERSAL}"
-        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_UNIVERSAL}"
+        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_LINUX_AARCH64}"
+        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_LINUX_AARCH64}"
         ;;
     esac
     SONAR_SCANNER_NAME="sonar-scanner"
     ;;
   macOS)
-    SONAR_SCANNER_SUFFIX="-macosx"
+    case ${ARCH} in
+      X64)
+        SONAR_SCANNER_SUFFIX="macosx-x64"
+        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_MACOSX_X64}"
+        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_MACOSX_X64}"
+        ;;
+      ARM64)
+        SONAR_SCANNER_SUFFIX="macosx-aarch64"
+        SONAR_SCANNER_URL="${SONAR_SCANNER_URL_MACOSX_AARCH64}"
+        SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_MACOSX_AARCH64}"
+        ;;
+    esac
     BUILD_WRAPPER_SUFFIX="macosx-x86"
     SONAR_SCANNER_NAME="sonar-scanner"
     BUILD_WRAPPER_NAME="build-wrapper-macosx-x86"
-    SONAR_SCANNER_URL="${SONAR_SCANNER_URL_MACOSX}"
-    SONAR_SCANNER_SHA="${SONAR_SCANNER_SHA_MACOSX}"
     ;;
   *)
     echo "::error::Unsupported runner OS '${OS}'"
@@ -51,7 +60,7 @@ esac
 echo "sonar-scanner-url=${SONAR_SCANNER_URL}"
 echo "sonar-scanner-sha=${SONAR_SCANNER_SHA}"
 
-SONAR_SCANNER_DIR="${INSTALL_PATH}/sonar-scanner-${SONAR_SCANNER_VERSION}${SONAR_SCANNER_SUFFIX}"
+SONAR_SCANNER_DIR="${INSTALL_PATH}/sonar-scanner-${SONAR_SCANNER_VERSION}-${SONAR_SCANNER_SUFFIX}"
 echo "sonar-scanner-dir=${SONAR_SCANNER_DIR}"
 echo "sonar-scanner-bin=${SONAR_SCANNER_DIR}/bin/${SONAR_SCANNER_NAME}"
 
