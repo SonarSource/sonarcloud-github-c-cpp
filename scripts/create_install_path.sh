@@ -15,7 +15,7 @@ fi
 ABSOLUTE_INSTALL_PATH=$(realpath "${INSTALL_PATH}")
 echo "Absolute installation path is '${ABSOLUTE_INSTALL_PATH}'"
 
-test  -d ${INSTALL_PATH}
+test -d "${INSTALL_PATH}"
 check_status "Installation path '${INSTALL_PATH}' is not a directory (absolute path is '${ABSOLUTE_INSTALL_PATH}')"
 
 test -r "${INSTALL_PATH}"
