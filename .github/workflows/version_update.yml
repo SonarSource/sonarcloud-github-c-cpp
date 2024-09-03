@@ -10,7 +10,7 @@ jobs:
     steps:
       - run: sudo apt install -y jq
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: main
           persist-credentials: true
