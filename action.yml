@@ -1,4 +1,4 @@
-name: 'SonarQube Cloud Scan for C and C++'
+name: 'SonarCloud Scan for C and C++'
 description: >
   Scan your C and C++ code with SonarQube Cloud. (Formerly SonarCloud)
 branding:
