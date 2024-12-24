@@ -26,6 +26,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Deprecation warning
+      shell: bash
+      run: |
+        echo "::warning title=SonarScanner::This action is deprecated and will be removed in a future release. Please use the sonarqube-scan-action and its install-build-wrapper sub-action instead."
     - name: SonarQube Cloud Scan
       id: scan
       uses: sonarsource/sonarqube-github-c-cpp@25a2efe466506d2293f19f2e3062df4247477464
