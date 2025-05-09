@@ -6,7 +6,7 @@ on:
 jobs:
   update-version:
     name: Prepare pull request for sonar-scanner version update
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     steps:
       - run: sudo apt install -y jq
 
